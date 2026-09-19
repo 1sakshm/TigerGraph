@@ -6,6 +6,8 @@ An evidence-driven fraud investigation system for the Hacker House Goa 2026 Tige
 
 **Public benchmark preview:** [1sakshm.github.io/TigerGraph](https://1sakshm.github.io/TigerGraph/) displays the 20 committed investigations and traces on GitHub Pages. It is read-only; the interactive synthetic investigator runs in the Python service.
 
+**Host the interactive demo:** [Deploy to Render](https://render.com/deploy?repo=https://github.com/1sakshm/TigerGraph) uses the repository's `render.yaml` and Dockerfile. It runs only the labeled synthetic demo; the real 20-case benchmark remains available at the Pages link above.
+
 ![Dataset-backed benchmark view](screenshots/benchmark-hhg019.png)
 
 ## Why relationships matter

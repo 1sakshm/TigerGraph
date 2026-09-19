@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: graphsentinel-hhgoa-demo
+    runtime: docker
+    plan: free
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /api/health
+    autoDeployTrigger: off
+    envVars:
+      - key: GRAPHSENTINEL_MODE
+        value: demo

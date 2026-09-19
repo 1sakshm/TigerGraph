@@ -47,6 +47,22 @@ The default SQLite file is `/data/cases.sqlite`. Mount a persistent volume at
 The benchmark answers are bundled as read-only files; the private raw HHGOA
 dataset and DuckDB index are excluded from the image.
 
+### Get a Python host with Render
+
+Use the [Deploy to Render link](https://render.com/deploy?repo=https://github.com/1sakshm/TigerGraph)
+and sign in or create a Render account. Review the `graphsentinel-hhgoa-demo`
+web service from `render.yaml`, select a workspace, and approve the Blueprint.
+Render builds the Dockerfile, checks `/api/health`, and provides an `onrender.com`
+URL. Open `/` for the interactive synthetic investigator and `/benchmark` for
+the bundled read-only HHGOA answers. The Blueprint disables automatic deploys,
+so update the service manually when you want to pick up later repository changes.
+
+The Free web service sleeps when idle and has an ephemeral filesystem. Its SQLite
+case memory can disappear after a sleep, restart, or deploy. For a persistent
+demo, move to a paid web service and attach a disk at `/data`; for a real fraud
+service, add authentication and a durable database before exposing analyst
+mutations. Set any TigerGraph token as a Render secret, never in `render.yaml`.
+
 The container can be configured for the separate live TigerGraph interactive
 workflow with `GRAPHSENTINEL_MODE=tigergraph`, `TIGERGRAPH_URL`,
 `TIGERGRAPH_GRAPH`, and `TIGERGRAPH_TOKEN`. That mode enables case mutations;
