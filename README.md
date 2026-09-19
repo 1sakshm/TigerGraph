@@ -4,6 +4,8 @@ An evidence-driven fraud investigation system for the Hacker House Goa 2026 Tige
 
 **Current verification:** the 20 HHGOA answers were produced from the supplied CSVs through a local read-only index. Their `written_to_graph` fields are `false`, and their row evidence uses `source: external`. The TigerGraph schema, import path, query adapter, and writeback path are implemented but have not been run against a live instance because no endpoint or token has been supplied. The [benchmark report](BENCHMARK_RESULTS.md) records this explicitly.
 
+**Public benchmark preview:** [1sakshm.github.io/TigerGraph](https://1sakshm.github.io/TigerGraph/) displays the 20 committed investigations and traces on GitHub Pages. It is read-only; the interactive synthetic investigator runs in the Python service.
+
 ![Dataset-backed benchmark view](screenshots/benchmark-hhg019.png)
 
 ## Why relationships matter

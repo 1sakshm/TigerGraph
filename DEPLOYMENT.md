@@ -19,11 +19,10 @@ To reproduce the artifact locally:
 Then open `http://127.0.0.1:8765/`. The Pages workflow rebuilds this artifact
 on every push to `main`.
 
-At the first deployment, GitHub's edge served the page successfully, but its
-public URL redirected to `http://saksharma.me/TigerGraph/`, and that hostname did
-not resolve in DNS. The repository's Pages `cname` setting is empty. Restore
-DNS for that domain or adjust the account's Pages domain settings before using
-the public URL in a submission; the redirect lies outside this repository.
+The public preview is live at
+[1sakshm.github.io/TigerGraph](https://1sakshm.github.io/TigerGraph/).
+It is a static review of committed benchmark outputs. The case files still
+state `written_to_graph=false` until the live TigerGraph benchmark is run.
 
 ## Full investigator service
 
