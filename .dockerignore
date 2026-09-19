@@ -1,0 +1,11 @@
+.git
+.github
+.venv
+__pycache__
+*.pyc
+.pytest_cache
+data/private
+data/cases.sqlite
+_site
+.edge-profile*
+.env

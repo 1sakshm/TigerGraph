@@ -9,3 +9,4 @@ data/cases.sqlite
 .edge-profile*/
 *.pyc
 *.egg-info/
+_site/

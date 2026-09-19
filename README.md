@@ -105,3 +105,5 @@ The HHGOA action names and L1/L2 routes follow policy R1–R10 from the supplied
 | `docs/` | Design specification and implementation plan |
 
 The prepared [technical blog](BLOG.md) and [social post](SOCIAL_POST.md) are drafts. A recorded demo video and external publication remain separate submission steps.
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for the read-only GitHub Pages preview and the containerized FastAPI deployment path.

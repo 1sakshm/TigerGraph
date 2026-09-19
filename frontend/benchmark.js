@@ -4,6 +4,12 @@ const pretty = (value) => String(value || '').replaceAll('_',' ');
 const pct = (value) => `${Math.round((value || 0) * 100)}%`;
 const money = (value) => `$${Number(value || 0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
 const state = { summaries:[], answer:null, trace:[], tab:'overview' };
+const staticPreview = document.documentElement.dataset.staticPreview === 'true';
+const dataUrls = {
+  list: staticPreview ? './data/index.json' : '/api/benchmark',
+  answer: (id) => staticPreview ? `./data/${encodeURIComponent(id)}.json` : `/api/benchmark/${encodeURIComponent(id)}`,
+  trace: (id) => staticPreview ? `./data/investigations/${encodeURIComponent(id)}.json` : `/api/benchmark/${encodeURIComponent(id)}/trace`,
+};
 
 async function get(path) {
   const response = await fetch(path);
@@ -73,10 +79,10 @@ function renderMap(evidence) {
   $('citation-map').innerHTML=`<svg viewBox="0 0 780 ${height}" role="img" aria-label="Evidence citations connected to real entity identifiers">${lines}${claims}${nodes}</svg>`;
 }
 async function selectCase(caseId) {
-  [state.answer,state.trace]=await Promise.all([get(`/api/benchmark/${encodeURIComponent(caseId)}`),get(`/api/benchmark/${encodeURIComponent(caseId)}/trace`)]);
+  [state.answer,state.trace]=await Promise.all([get(dataUrls.answer(caseId)),get(dataUrls.trace(caseId))]);
   render();
 }
 document.addEventListener('click',(event)=>{const button=event.target.closest('[data-case]');if(button){selectCase(button.dataset.case).catch(showError);return;}const tab=event.target.closest('[data-tab]');if(tab){state.tab=tab.dataset.tab;render();}});
 $('filter').addEventListener('input',renderList);
 function showError(error){$('empty-state').hidden=false;$('case-view').hidden=true;$('empty-state').innerHTML=`<h1>Unable to load cases</h1><p>${esc(error.message)}</p>`;}
-(async()=>{try{state.summaries=await get('/api/benchmark');if(!state.summaries.length)throw new Error('Run the HHGOA benchmark to create the case files.');await selectCase('HHG-019');}catch(error){showError(error);}})();
+(async()=>{try{state.summaries=await get(dataUrls.list);if(!state.summaries.length)throw new Error('Run the HHGOA benchmark to create the case files.');await selectCase('HHG-019');}catch(error){showError(error);}})();
