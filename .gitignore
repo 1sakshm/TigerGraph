@@ -10,3 +10,4 @@ data/cases.sqlite
 *.pyc
 *.egg-info/
 _site/
+dist/
