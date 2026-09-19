@@ -1,0 +1,153 @@
+{
+  "case_id": "HHG-006",
+  "case": {
+    "status": "open",
+    "verdict": "fraud",
+    "fraud_probability": 0.882,
+    "pattern": "card_not_present_new_device",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3476602",
+      "3476633",
+      "3476665",
+      "3476682"
+    ],
+    "first_suspicious_txn_id": "3476602",
+    "connected_card_ids": [],
+    "connected_device_profiles": [
+      "Trident/7.0 | Windows 7 | ie 11.0 for desktop | 1920x1080"
+    ],
+    "exposure_usd": 1906.07,
+    "evidence": [
+      {
+        "claim": "Transaction 3476682 for customer C07297 was $482.12 via online at 2016-11-21 20:30:00; upstream model score 0.25.",
+        "source": "external",
+        "ref": "index:transaction",
+        "entity_ids": [
+          "3476682",
+          "C07297"
+        ]
+      },
+      {
+        "claim": "Customer report disputes transaction 3476682: Customer C07297 message: 'I never made this $482.12 purchase. Please check my card.' Refers to 3476682.",
+        "source": "customer",
+        "ref": "case_pack:HHG-006:trigger_text",
+        "entity_ids": [
+          "3476682",
+          "C07297"
+        ]
+      },
+      {
+        "claim": "Identity record marks the device as New for transaction 3476682.",
+        "source": "external",
+        "ref": "index:identity_status",
+        "entity_ids": [
+          "3476682"
+        ]
+      },
+      {
+        "claim": "In the prior 30 days this customer group had 50 transactions, median amount $80.51, and 9 in billing region 264.0.",
+        "source": "external",
+        "ref": "index:customer_history_30d",
+        "entity_ids": [
+          "C07297"
+        ]
+      },
+      {
+        "claim": "At least 4 same-customer, same-product, similar-amount transactions occurred within six hours of 3476682; the source does not identify which physical card made each one.",
+        "source": "external",
+        "ref": "index:customer_window_6h",
+        "entity_ids": [
+          "3476682",
+          "3476665",
+          "3476633",
+          "3476602"
+        ]
+      },
+      {
+        "claim": "Detailed device profile Trident/7.0 | Windows 7 | ie 11.0 for desktop | 1920x1080 appears on transactions for 18 other customers in the prior seven days. A shared profile alone does not prove a shared physical device.",
+        "source": "external",
+        "ref": "index:profile_neighbors_7d",
+        "entity_ids": [
+          "3476682",
+          "3476006",
+          "3474255",
+          "3473438",
+          "3473417",
+          "3472754",
+          "3471684",
+          "3468698",
+          "3468647",
+          "C00288",
+          "C01982",
+          "C02716",
+          "C02859",
+          "C04108",
+          "C05146",
+          "C05560",
+          "C05868"
+        ]
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Transaction 3476682 shows card not present new device with 4 transaction(s) in the bounded episode. The customer report and transaction sequence supports a 88% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer explicitly disputed this transaction."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R2 and section 3a: customer denial and exposure above $1,000; L2 approval."
+      }
+    ],
+    "final": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer explicitly disputed this transaction."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R2 and section 3a: customer denial and exposure above $1,000; L2 approval."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": true,
+    "reason": "R2 and section 3a: customer denial with exposure over $1,000; L2 approval pending.",
+    "narrative": "Customer C07297 disputed transaction 3476682 on card C07297-K1. The customer report states: Customer C07297 message: 'I never made this $482.12 purchase. Please check my card.' Refers to 3476682. The flagged activity occurred on 2016-11-21 through the online channel. The bounded episode contains 4 transactions with amounts $478.95, $456.96, $488.04, $482.12. The product code was C and billing region was 264.0. The flagged transaction's device profile was Trident/7.0 | Windows 7 | ie 11.0 for desktop | 1920x1080. Its identity status was New. The customer denial and transaction sequence support suspected card not present new device. The identified exposure is $1906.07; the supplied file does not provide merchant identity or a verified card key on each transaction. Under R2 and section 3a, the exposure threshold calls for a report subject to L2 approval.",
+    "subjects": [
+      "C07297",
+      "C07297-K1"
+    ],
+    "total_amount_usd": 1906.07,
+    "activity_dates": [
+      "2016-11-21",
+      "2016-11-21"
+    ]
+  },
+  "stop_reason": "Strong independent evidence supports the current proposal; human approval gates high-impact actions.",
+  "tool_calls": 6,
+  "tokens": 0,
+  "latency_s": 0.1278
+}

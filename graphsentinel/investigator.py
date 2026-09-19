@@ -30,6 +30,7 @@ class Investigator:
             id=f"CASE-{uuid4().hex[:12].upper()}",
             transaction_id=transaction_id,
             trigger=trigger,
+            data_provenance=getattr(self.graph, "provenance", "UNSPECIFIED"),
             status="GRAPH_INVESTIGATION",
         )
         case.trace.append(TraceEvent(

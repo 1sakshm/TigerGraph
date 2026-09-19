@@ -8,3 +8,4 @@ data/cases.sqlite
 .chrome-profile/
 .edge-profile*/
 *.pyc
+*.egg-info/

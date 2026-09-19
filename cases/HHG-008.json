@@ -1,0 +1,113 @@
+{
+  "case_id": "HHG-008",
+  "case": {
+    "status": "open",
+    "verdict": "uncertain",
+    "fraud_probability": 0.761,
+    "pattern": "card_not_present_fraud",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3557979",
+      "3557987",
+      "3558054"
+    ],
+    "first_suspicious_txn_id": "3557979",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 166.97,
+    "evidence": [
+      {
+        "claim": "Transaction 3558054 for customer C13171 was $55.68 via online at 2016-12-19 22:08:56; upstream model score 0.38.",
+        "source": "external",
+        "ref": "index:transaction",
+        "entity_ids": [
+          "3558054",
+          "C13171"
+        ]
+      },
+      {
+        "claim": "Customer report disputes transaction 3558054: Customer C13171 message: 'I never made this $55.68 purchase. Please check my card.' Refers to 3558054.",
+        "source": "customer",
+        "ref": "case_pack:HHG-008:trigger_text",
+        "entity_ids": [
+          "3558054",
+          "C13171"
+        ]
+      },
+      {
+        "claim": "In the prior 30 days this customer group had 139 transactions, median amount $35.49, and 134 in billing region missing.",
+        "source": "external",
+        "ref": "index:customer_history_30d",
+        "entity_ids": [
+          "C13171"
+        ]
+      },
+      {
+        "claim": "At least 3 same-customer, same-product, similar-amount transactions occurred within six hours of 3558054; the source does not identify which physical card made each one.",
+        "source": "external",
+        "ref": "index:customer_window_6h",
+        "entity_ids": [
+          "3558054",
+          "3557987",
+          "3557979"
+        ]
+      },
+      {
+        "claim": "Closed case memory for this customer group contains CC-5010 (confirmed_fraud, card_not_present_new_device), CC-4819 (cleared, none); these outcomes are context, not a verdict on the current transaction.",
+        "source": "external",
+        "ref": "index:prior_customer_cases",
+        "entity_ids": [
+          "CC-5010",
+          "CC-4819"
+        ]
+      }
+    ],
+    "similar_prior_cases": [
+      "CC-5010",
+      "CC-4819"
+    ],
+    "summary": "Transaction 3558054 has card not present fraud indicators, but the available evidence supports only a 76% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer explicitly disputed this transaction."
+      }
+    ],
+    "final": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer explicitly disputed this transaction."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": false,
+    "reason": "Section 3a: current evidence does not meet the report threshold.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0.0,
+    "activity_dates": []
+  },
+  "stop_reason": "Further available graph expansion has low value; the case awaits customer or analyst clarification.",
+  "tool_calls": 4,
+  "tokens": 0,
+  "latency_s": 0.0636
+}

@@ -1,0 +1,60 @@
+// Bounded, installed traversal procedures. No arbitrary user GSQL is executed.
+USE GRAPH HHGOA
+
+CREATE QUERY hh_transaction_context(VERTEX<Transaction> tx, INT max_results) FOR GRAPH HHGOA {
+  seed = {tx};
+  customer = SELECT c FROM seed:t -(MADE_BY:e)-> Customer:c;
+  history = SELECT h FROM customer:c -(MADE:e)-> Transaction:h
+            WHERE h.id != tx.id AND h.ts < tx.ts
+            ORDER BY h.ts DESC LIMIT max_results;
+  device = SELECT d FROM seed:t -(FROM_DEVICE:e)-> DeviceProfile:d;
+  peers = SELECT p FROM device:d -(DEVICE_OF:e)-> Transaction:p
+          WHERE p.customer_id != tx.customer_id
+          ORDER BY p.ts DESC LIMIT max_results;
+  PRINT seed AS transaction, customer, history, device, peers;
+}
+
+CREATE QUERY hh_customer_window(VERTEX<Customer> customer, STRING start_ts,
+                                STRING end_ts, INT max_results) FOR GRAPH HHGOA {
+  seed = {customer};
+  window = SELECT t FROM seed:c -(MADE:e)-> Transaction:t
+           WHERE t.ts >= start_ts AND t.ts <= end_ts
+           ORDER BY t.ts DESC LIMIT max_results;
+  PRINT window;
+}
+
+CREATE QUERY hh_profile_neighbors(VERTEX<DeviceProfile> profile, STRING start_ts,
+                                  STRING end_ts, INT max_results) FOR GRAPH HHGOA {
+  seed = {profile};
+  peers = SELECT t FROM seed:d -(DEVICE_OF:e)-> Transaction:t
+          WHERE t.ts >= start_ts AND t.ts <= end_ts
+          ORDER BY t.ts DESC LIMIT max_results;
+  customers = SELECT c FROM peers:t -(MADE_BY:e)-> Customer:c
+              LIMIT max_results;
+  PRINT peers, customers;
+}
+
+CREATE QUERY hh_prior_cases(VERTEX<Customer> customer, STRING before_ts,
+                            INT max_results) FOR GRAPH HHGOA {
+  seed = {customer};
+  past = SELECT p FROM seed:c -(CUSTOMER_CLOSED_CASE:e)-> ClosedCase:p
+         WHERE p.closed_at <= before_ts
+         ORDER BY p.closed_at DESC LIMIT max_results;
+  memory = SELECT m FROM seed:c -(CUSTOMER_CASE:e)-> InvestigationCase:m
+           WHERE m.updated_at <= before_ts
+           ORDER BY m.updated_at DESC LIMIT max_results;
+  PRINT past, memory;
+}
+
+CREATE QUERY hh_case_transactions(VERTEX<ClosedCase> prior, INT max_results) FOR GRAPH HHGOA {
+  seed = {prior};
+  transactions = SELECT t FROM seed:c -(CLOSED_TX:e)-> Transaction:t
+                 ORDER BY t.ts DESC LIMIT max_results;
+  PRINT transactions;
+}
+
+INSTALL QUERY hh_transaction_context
+INSTALL QUERY hh_customer_window
+INSTALL QUERY hh_profile_neighbors
+INSTALL QUERY hh_prior_cases
+INSTALL QUERY hh_case_transactions

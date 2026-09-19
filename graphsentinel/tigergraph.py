@@ -16,6 +16,7 @@ def _attrs(values: dict) -> dict:
 
 class TigerGraphGraph:
     """Only fixed, installed GSQL procedures may be invoked by the investigator."""
+    provenance = "TIGERGRAPH"
 
     ALLOWED_QUERIES = {
         "gs_transaction_neighborhood", "gs_cases_by_account", "gs_cases_by_device"

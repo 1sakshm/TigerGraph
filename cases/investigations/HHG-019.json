@@ -1,0 +1,32 @@
+[
+  {
+    "step": 1,
+    "tool": "transaction",
+    "seed": "3503878",
+    "result": "Retrieve flagged transaction and identity"
+  },
+  {
+    "step": 2,
+    "tool": "customer_window",
+    "seed": "C07987",
+    "result": "2 transactions in the bounded 48-hour window"
+  },
+  {
+    "step": 3,
+    "tool": "profile_peers",
+    "seed": "3503878",
+    "result": "2 other customers"
+  },
+  {
+    "step": 4,
+    "tool": "prior_cases",
+    "seed": "C07987",
+    "result": "4 closed cases"
+  },
+  {
+    "step": 5,
+    "tool": "uncertainty_assessment",
+    "seed": "3503878",
+    "result": "risk_probability=0.960; evidence_confidence=0.600; both are uncalibrated heuristics"
+  }
+]

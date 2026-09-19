@@ -1,0 +1,224 @@
+{
+  "case_id": "HHG-014",
+  "case": {
+    "status": "escalated",
+    "verdict": "uncertain",
+    "fraud_probability": 0.827,
+    "pattern": "undocumented",
+    "pattern_description": "Several customer groups made similar online purchases from one detailed device profile in a short window. This cross-customer amount and device motif is visible through profile-neighbor and transaction-window queries.",
+    "affected_txn_ids": [
+      "3478561"
+    ],
+    "first_suspicious_txn_id": "3478561",
+    "connected_card_ids": [
+      "C01996-K2",
+      "C02910-K1",
+      "C02975-K1",
+      "C03676-K2",
+      "C04108-K2",
+      "C10193-K2",
+      "C11082-K1",
+      "C11670-K2",
+      "C12796-K1"
+    ],
+    "connected_device_profiles": [
+      "SM-G935F Build/NRD90M | Android 7.0 | chrome 62.0 for android | 1920x1080"
+    ],
+    "exposure_usd": 74.96,
+    "evidence": [
+      {
+        "claim": "Transaction 3478561 for customer C13487 was $74.96 via online at 2016-11-22 16:11:00; upstream model score 0.05.",
+        "source": "external",
+        "ref": "index:transaction",
+        "entity_ids": [
+          "3478561",
+          "C13487"
+        ]
+      },
+      {
+        "claim": "Identity record marks the device as New for transaction 3478561.",
+        "source": "external",
+        "ref": "index:identity_status",
+        "entity_ids": [
+          "3478561"
+        ]
+      },
+      {
+        "claim": "Identity proxy attribute is IP_PROXY:ANONYMOUS for transaction 3478561.",
+        "source": "external",
+        "ref": "index:identity_proxy",
+        "entity_ids": [
+          "3478561"
+        ]
+      },
+      {
+        "claim": "In the prior 30 days this customer group had 15 transactions, median amount $35.88, and 10 in billing region 191.0.",
+        "source": "external",
+        "ref": "index:customer_history_30d",
+        "entity_ids": [
+          "C13487"
+        ]
+      },
+      {
+        "claim": "Detailed device profile SM-G935F Build/NRD90M | Android 7.0 | chrome 62.0 for android | 1920x1080 appears on transactions for 18 other customers in the prior seven days. A shared profile alone does not prove a shared physical device.",
+        "source": "external",
+        "ref": "index:profile_neighbors_7d",
+        "entity_ids": [
+          "3478561",
+          "3478714",
+          "3478133",
+          "3477916",
+          "3476202",
+          "3475406",
+          "3474445",
+          "3473057",
+          "3473050",
+          "C01289",
+          "C01996",
+          "C02910",
+          "C02975",
+          "C03676",
+          "C04108",
+          "C04274",
+          "C05448"
+        ]
+      },
+      {
+        "claim": "Analyst-reported shared-origin activity is corroborated by at least five other customer groups using the same detailed profile, New identity status, and anonymous proxy context in the prior seven days.",
+        "source": "external",
+        "ref": "index:corroborated_profile_cluster",
+        "entity_ids": [
+          "3478561",
+          "3478714",
+          "3478133",
+          "3477916",
+          "3476202",
+          "3475406",
+          "3474445",
+          "3473057",
+          "3473050"
+        ]
+      },
+      {
+        "claim": "Closed-case records identify 9 card IDs for customer groups sharing the profile; exact card-to-peer-transaction attribution is unavailable in the supplied transaction CSV.",
+        "source": "external",
+        "ref": "index:known_cards_on_peer_customers",
+        "entity_ids": [
+          "C01996-K2",
+          "C02910-K1",
+          "C02975-K1",
+          "C03676-K2",
+          "C04108-K2",
+          "C10193-K2",
+          "C11082-K1",
+          "C11670-K2",
+          "C12796-K1"
+        ]
+      },
+      {
+        "claim": "No customer reply was assumed after 24 hours for this benchmark scenario; this is not observed customer testimony.",
+        "source": "external",
+        "ref": "evidence_request:1:simulated_nonresponse",
+        "entity_ids": [
+          "3478561"
+        ]
+      }
+    ],
+    "similar_prior_cases": [],
+    "summary": "Transaction 3478561 has undocumented indicators, but the available evidence supports only a 83% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 4,
+      "assumed_response": "No customer reply received within 24 hours; this is a simulated benchmark assumption."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: graph signals remain inconclusive; ask the cardholder."
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6/R9: monitor identified cards in the profile-linked customer groups."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R6/R9: coordinated cross-customer pattern merits a report; L2 approval."
+      },
+      {
+        "action": "ESCALATE_TO_ANALYST",
+        "route": "auto",
+        "reason": "R9: analyst should review undocumented coordination."
+      }
+    ],
+    "final": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "MONITOR_CONNECTED_CARDS",
+        "route": "auto",
+        "reason": "R6/R9: monitor identified cards in the profile-linked customer groups."
+      },
+      {
+        "action": "FILE_REPORT",
+        "route": "L2",
+        "reason": "R6/R9: coordinated cross-customer pattern merits a report; L2 approval."
+      },
+      {
+        "action": "ESCALATE_TO_ANALYST",
+        "route": "auto",
+        "reason": "R9: analyst should review undocumented coordination."
+      },
+      {
+        "action": "MONITOR_CARD",
+        "route": "auto",
+        "reason": "R4: no customer reply within the simulated 24-hour window."
+      },
+      {
+        "action": "DECLINE_TRANSACTION",
+        "route": "L1",
+        "reason": "R4: decline pending authorizations; L1 approval required."
+      }
+    ],
+    "what_changed": "A simulated 24-hour nonresponse leaves identity uncertain; R4 replaces verification with monitoring and a pending-authorization decline proposal."
+  },
+  "sar": {
+    "file": true,
+    "reason": "R6/R9 and section 3a: coordinated profile and amount motif; L2 approval pending.",
+    "narrative": "Customer C13487 is associated with card C13487-K1 in the case pack. Transaction 3478561 occurred on 2016-11-22 for $74.96. The channel was online and the product code was C. The recorded billing region was 191.0. The identity record described the device profile as SM-G935F Build/NRD90M | Android 7.0 | chrome 62.0 for android | 1920x1080. The same detailed profile appeared among 18 other customer groups in the bounded search window. The observed cross-customer motif is classified as undocumented; a profile match alone does not establish a common physical device. The identified suspicious episode totals $74.96. The supplied transaction file has no merchant identifier or verified card-to-transaction key, limiting attribution. Under R6 and R9, filing is recommended for human L2 review because the activity may be coordinated.",
+    "subjects": [
+      "C13487",
+      "C13487-K1",
+      "C01289",
+      "C01996",
+      "C02910",
+      "C02975",
+      "C03676"
+    ],
+    "total_amount_usd": 74.96,
+    "activity_dates": [
+      "2016-11-22",
+      "2016-11-22"
+    ]
+  },
+  "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
+  "tool_calls": 6,
+  "tokens": 0,
+  "latency_s": 0.1034
+}

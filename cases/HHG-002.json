@@ -1,0 +1,109 @@
+{
+  "case_id": "HHG-002",
+  "case": {
+    "status": "open",
+    "verdict": "uncertain",
+    "fraud_probability": 0.609,
+    "pattern": "none",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3478782"
+    ],
+    "first_suspicious_txn_id": "3478782",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 292.36,
+    "evidence": [
+      {
+        "claim": "Transaction 3478782 for customer C11891 was $292.36 via online at 2016-11-22 17:27:07; upstream model score 0.79.",
+        "source": "external",
+        "ref": "index:transaction",
+        "entity_ids": [
+          "3478782",
+          "C11891"
+        ]
+      },
+      {
+        "claim": "In the prior 30 days this customer group had 9 transactions, median amount $52.45, and 9 in billing region missing.",
+        "source": "external",
+        "ref": "index:customer_history_30d",
+        "entity_ids": [
+          "C11891"
+        ]
+      },
+      {
+        "claim": "Closed case memory for this customer group contains CC-4160 (confirmed_fraud, card_not_present_fraud); these outcomes are context, not a verdict on the current transaction.",
+        "source": "external",
+        "ref": "index:prior_customer_cases",
+        "entity_ids": [
+          "CC-4160"
+        ]
+      },
+      {
+        "claim": "No customer reply was assumed after 24 hours for this benchmark scenario; this is not observed customer testimony.",
+        "source": "external",
+        "ref": "evidence_request:1:simulated_nonresponse",
+        "entity_ids": [
+          "3478782"
+        ]
+      }
+    ],
+    "similar_prior_cases": [
+      "CC-4160"
+    ],
+    "summary": "Transaction 3478782 has none indicators, but the available evidence supports only a 61% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 4,
+      "assumed_response": "No customer reply received within 24 hours; this is a simulated benchmark assumption."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: graph signals remain inconclusive; ask the cardholder."
+      }
+    ],
+    "final": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "MONITOR_CARD",
+        "route": "auto",
+        "reason": "R4: no customer reply within the simulated 24-hour window."
+      },
+      {
+        "action": "DECLINE_TRANSACTION",
+        "route": "L1",
+        "reason": "R4: decline pending authorizations; L1 approval required."
+      }
+    ],
+    "what_changed": "A simulated 24-hour nonresponse leaves identity uncertain; R4 replaces verification with monitoring and a pending-authorization decline proposal."
+  },
+  "sar": {
+    "file": false,
+    "reason": "Section 3a: current evidence does not meet the report threshold.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0.0,
+    "activity_dates": []
+  },
+  "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
+  "tool_calls": 4,
+  "tokens": 0,
+  "latency_s": 0.0381
+}

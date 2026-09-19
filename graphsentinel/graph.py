@@ -15,6 +15,7 @@ class GraphPort(Protocol):
 
 class FixtureGraph:
     """Explicit synthetic graph for offline development, never benchmark data."""
+    provenance = "SYNTHETIC_DEMO_ONLY"
 
     def __init__(self, transactions: list[Transaction], cases: list[PriorCase]):
         self.transactions = {transaction.id: transaction for transaction in transactions}

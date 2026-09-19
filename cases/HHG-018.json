@@ -1,0 +1,99 @@
+{
+  "case_id": "HHG-018",
+  "case": {
+    "status": "open",
+    "verdict": "uncertain",
+    "fraud_probability": 0.554,
+    "pattern": "none",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3491361"
+    ],
+    "first_suspicious_txn_id": "3491361",
+    "connected_card_ids": [],
+    "connected_device_profiles": [],
+    "exposure_usd": 39.08,
+    "evidence": [
+      {
+        "claim": "Transaction 3491361 for customer C02354 was $39.08 via in_person at 2016-11-27 13:41:26; upstream model score 0.48.",
+        "source": "external",
+        "ref": "index:transaction",
+        "entity_ids": [
+          "3491361",
+          "C02354"
+        ]
+      },
+      {
+        "claim": "Customer report disputes transaction 3491361: Customer C02354 message: 'I never made this $39.08 purchase. Please check my card.' Refers to 3491361.",
+        "source": "customer",
+        "ref": "case_pack:HHG-018:trigger_text",
+        "entity_ids": [
+          "3491361",
+          "C02354"
+        ]
+      },
+      {
+        "claim": "In the prior 30 days this customer group had 1157 transactions, median amount $91.96, and 95 in billing region 126.0.",
+        "source": "external",
+        "ref": "index:customer_history_30d",
+        "entity_ids": [
+          "C02354"
+        ]
+      },
+      {
+        "claim": "Closed case memory for this customer group contains CC-5558 (confirmed_fraud, card_not_present_fraud); these outcomes are context, not a verdict on the current transaction.",
+        "source": "external",
+        "ref": "index:prior_customer_cases",
+        "entity_ids": [
+          "CC-5558"
+        ]
+      }
+    ],
+    "similar_prior_cases": [
+      "CC-5558"
+    ],
+    "summary": "Transaction 3491361 has none indicators, but the available evidence supports only a 55% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer explicitly disputed this transaction."
+      }
+    ],
+    "final": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "BLOCK_CARD",
+        "route": "L1",
+        "reason": "R2: customer explicitly disputed this transaction."
+      }
+    ],
+    "what_changed": "nothing"
+  },
+  "sar": {
+    "file": false,
+    "reason": "Section 3a: current evidence does not meet the report threshold.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0.0,
+    "activity_dates": []
+  },
+  "stop_reason": "Further available graph expansion has low value; the case awaits customer or analyst clarification.",
+  "tool_calls": 4,
+  "tokens": 0,
+  "latency_s": 0.0501
+}

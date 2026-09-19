@@ -76,6 +76,7 @@ class CaseRecord(BaseModel):
     id: str
     transaction_id: str
     trigger: str
+    data_provenance: str = "UNSPECIFIED"
     status: str
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))

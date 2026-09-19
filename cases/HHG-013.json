@@ -1,0 +1,145 @@
+{
+  "case_id": "HHG-013",
+  "case": {
+    "status": "open",
+    "verdict": "uncertain",
+    "fraud_probability": 0.603,
+    "pattern": "card_not_present_new_device",
+    "pattern_description": "",
+    "affected_txn_ids": [
+      "3526826"
+    ],
+    "first_suspicious_txn_id": "3526826",
+    "connected_card_ids": [],
+    "connected_device_profiles": [
+      "Windows | unknown | chrome 66.0 | unknown"
+    ],
+    "exposure_usd": 35.66,
+    "evidence": [
+      {
+        "claim": "Transaction 3526826 for customer C07671 was $35.66 via online at 2016-12-09 02:39:29; upstream model score 0.76.",
+        "source": "external",
+        "ref": "index:transaction",
+        "entity_ids": [
+          "3526826",
+          "C07671"
+        ]
+      },
+      {
+        "claim": "Identity record marks the device as New for transaction 3526826.",
+        "source": "external",
+        "ref": "index:identity_status",
+        "entity_ids": [
+          "3526826"
+        ]
+      },
+      {
+        "claim": "In the prior 30 days this customer group had 274 transactions, median amount $58.97, and 0 in billing region missing.",
+        "source": "external",
+        "ref": "index:customer_history_30d",
+        "entity_ids": [
+          "C07671"
+        ]
+      },
+      {
+        "claim": "Detailed device profile Windows | unknown | chrome 66.0 | unknown appears on transactions for 44 other customers in the prior seven days. A shared profile alone does not prove a shared physical device.",
+        "source": "external",
+        "ref": "index:profile_neighbors_7d",
+        "entity_ids": [
+          "3526826",
+          "3527040",
+          "3527033",
+          "3526952",
+          "3526942",
+          "3526892",
+          "3526821",
+          "3526749",
+          "3526688",
+          "C00140",
+          "C00426",
+          "C00523",
+          "C00788",
+          "C01109",
+          "C01433",
+          "C01521",
+          "C01525"
+        ]
+      },
+      {
+        "claim": "Closed case memory for this customer group contains CC-4294 (confirmed_fraud, account_takeover), CC-3761 (cleared, none); these outcomes are context, not a verdict on the current transaction.",
+        "source": "external",
+        "ref": "index:prior_customer_cases",
+        "entity_ids": [
+          "CC-4294",
+          "CC-3761"
+        ]
+      },
+      {
+        "claim": "No customer reply was assumed after 24 hours for this benchmark scenario; this is not observed customer testimony.",
+        "source": "external",
+        "ref": "evidence_request:1:simulated_nonresponse",
+        "entity_ids": [
+          "3526826"
+        ]
+      }
+    ],
+    "similar_prior_cases": [
+      "CC-4294",
+      "CC-3761"
+    ],
+    "summary": "Transaction 3526826 has card not present new device indicators, but the available evidence supports only a 60% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "written_to_graph": false,
+    "graph_case_id": ""
+  },
+  "evidence_requests": [
+    {
+      "type": "customer_validation",
+      "asked_after_step": 4,
+      "assumed_response": "No customer reply received within 24 hours; this is a simulated benchmark assumption."
+    }
+  ],
+  "next_best_actions": {
+    "initial": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "VERIFY_WITH_CUSTOMER",
+        "route": "auto",
+        "reason": "R1: graph signals remain inconclusive; ask the cardholder."
+      }
+    ],
+    "final": [
+      {
+        "action": "CREATE_CASE",
+        "route": "auto",
+        "reason": "R2/R6/R9 or section 3a: record the investigation."
+      },
+      {
+        "action": "MONITOR_CARD",
+        "route": "auto",
+        "reason": "R4: no customer reply within the simulated 24-hour window."
+      },
+      {
+        "action": "DECLINE_TRANSACTION",
+        "route": "L1",
+        "reason": "R4: decline pending authorizations; L1 approval required."
+      }
+    ],
+    "what_changed": "A simulated 24-hour nonresponse leaves identity uncertain; R4 replaces verification with monitoring and a pending-authorization decline proposal."
+  },
+  "sar": {
+    "file": false,
+    "reason": "Section 3a: current evidence does not meet the report threshold.",
+    "narrative": "",
+    "subjects": [],
+    "total_amount_usd": 0.0,
+    "activity_dates": []
+  },
+  "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
+  "tool_calls": 6,
+  "tokens": 0,
+  "latency_s": 0.1782
+}
