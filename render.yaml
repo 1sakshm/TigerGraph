@@ -5,7 +5,7 @@ services:
     plan: free
     dockerfilePath: ./Dockerfile
     healthCheckPath: /api/health
-    autoDeployTrigger: off
+    autoDeployTrigger: "off"
     envVars:
       - key: GRAPHSENTINEL_MODE
         value: demo
