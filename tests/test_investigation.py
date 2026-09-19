@@ -63,3 +63,10 @@ def test_invalid_evidence_cannot_force_card_block(investigator):
     with pytest.raises(ValueError):
         investigator.add_evidence(case, "customer_confirmation", "maybe")
     assert len(case.recommendations) == 1
+
+
+def test_unapproved_block_is_denied_by_policy(investigator):
+    with pytest.raises(PermissionError):
+        investigator.policy.execute("BLOCK_CARD")
+    with pytest.raises(PermissionError):
+        investigator.policy.execute("WIPE_ACCOUNT")

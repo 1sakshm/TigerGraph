@@ -11,6 +11,7 @@ from graphsentinel.investigator import Investigator
 from graphsentinel.models import CaseRecord, TraceEvent
 from graphsentinel.policy import PolicyEngine
 from graphsentinel.store import CaseStore
+from graphsentinel.tigergraph import TigerGraphError
 
 
 class InvestigationRequest(BaseModel):
@@ -36,6 +37,11 @@ class CloseRequest(BaseModel):
 def create_app(graph: GraphPort, store: CaseStore, mode: str) -> FastAPI:
     api = FastAPI(title="GraphSentinel", version="0.1.0")
     investigator = Investigator(graph, PolicyEngine())
+
+    @api.exception_handler(TigerGraphError)
+    def graph_unavailable(_request, error: TigerGraphError):
+        from fastapi.responses import JSONResponse
+        return JSONResponse(status_code=503, content={"detail": str(error)})
     for prior in store.list():
         if prior.outcome:
             graph.save_case(prior)

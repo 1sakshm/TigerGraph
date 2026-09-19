@@ -5,6 +5,7 @@ from fastapi.testclient import TestClient
 from graphsentinel.api import create_app
 from graphsentinel.graph import FixtureGraph
 from graphsentinel.store import CaseStore
+from graphsentinel.tigergraph import TigerGraphError
 
 
 def client(tmp_path):
@@ -53,3 +54,17 @@ def test_unknown_case_and_unnamed_approval_are_rejected(tmp_path):
     bad = api.post(f"/api/cases/{case_id}/decision", json={"decision": "approve", "analyst_id": ""})
     assert bad.status_code == 403
     assert api.get(f"/api/cases/{case_id}").json()["actions_taken"] == []
+
+
+def test_graph_outage_is_reported_as_service_unavailable(tmp_path):
+    class OfflineGraph:
+        def neighborhood(self, transaction_id, limit=50):
+            raise TigerGraphError("connection unavailable")
+
+        def save_case(self, case):
+            pass
+
+    api = TestClient(create_app(OfflineGraph(), CaseStore(tmp_path / "cases.sqlite"), mode="tigergraph"))
+    response = api.post("/api/investigations", json={"transaction_id": "T100", "trigger": "risk_model"})
+    assert response.status_code == 503
+    assert "connection unavailable" in response.json()["detail"]

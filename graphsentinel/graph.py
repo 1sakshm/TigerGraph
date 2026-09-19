@@ -8,7 +8,7 @@ from graphsentinel.models import DevicePeer, Neighborhood, PriorCase, Transactio
 class GraphPort(Protocol):
     def neighborhood(self, transaction_id: str, limit: int = 50) -> Neighborhood: ...
 
-    def prior_cases(self, entity_ids: set[str]) -> list[PriorCase]: ...
+    def prior_cases(self, account_id: str, device_id: str | None) -> list[PriorCase]: ...
 
     def save_case(self, case: object) -> None: ...
 
@@ -62,10 +62,13 @@ class FixtureGraph:
             transaction=seed,
             account_history=history,
             device_peers=peers,
-            related_cases=self.prior_cases(entities),
+            related_cases=self.prior_cases(seed.account_id, seed.device_id),
         )
 
-    def prior_cases(self, entity_ids: set[str]) -> list[PriorCase]:
+    def prior_cases(self, account_id: str, device_id: str | None) -> list[PriorCase]:
+        entity_ids = {account_id}
+        if device_id:
+            entity_ids.add(device_id)
         return sorted(
             (case for case in self.cases.values() if entity_ids.intersection(case.entity_ids)),
             key=lambda case: (-len(entity_ids.intersection(case.entity_ids)), case.id),

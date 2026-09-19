@@ -32,5 +32,5 @@ def test_missing_transaction_is_explicit():
 
 def test_prior_case_search_uses_entity_overlap():
     graph = FixtureGraph.from_file(FIXTURE)
-    cases = graph.prior_cases({"D_NEW", "A1"})
+    cases = graph.prior_cases("A1", "D_NEW")
     assert [case.id for case in cases] == ["HIST-1"]

@@ -1,0 +1,39 @@
+// These bounded traversals are the only installed queries invoked by the service.
+USE GRAPH GraphSentinel
+
+CREATE QUERY gs_transaction_neighborhood(VERTEX<Transaction> tx, INT max_results) FOR GRAPH GraphSentinel {
+  seed = {tx};
+  account = SELECT a FROM seed:t -(PERFORMED_BY:e)-> Account:a;
+  account_history = SELECT h FROM account:a -(PERFORMED:e)-> Transaction:h
+                    WHERE h.id != tx.id
+                    ORDER BY h.occurred_at DESC
+                    LIMIT max_results;
+  device = SELECT d FROM seed:t -(USED_DEVICE:e)-> Device:d;
+  device_peers = SELECT p FROM device:d -(DEVICE_USED_BY:e)-> Transaction:p
+                 WHERE p.account_id != tx.account_id
+                 ORDER BY p.occurred_at DESC
+                 LIMIT max_results;
+  PRINT seed AS transaction, account_history, device_peers;
+}
+
+CREATE QUERY gs_cases_by_account(VERTEX<Account> account, INT max_results) FOR GRAPH GraphSentinel {
+  seed = {account};
+  cases = SELECT c FROM seed:a -(ACCOUNT_CASE:e)-> FraudCase:c
+          WHERE c.outcome != ""
+          ORDER BY c.updated_at DESC
+          LIMIT max_results;
+  PRINT cases;
+}
+
+CREATE QUERY gs_cases_by_device(VERTEX<Device> device, INT max_results) FOR GRAPH GraphSentinel {
+  seed = {device};
+  cases = SELECT c FROM seed:d -(DEVICE_CASE:e)-> FraudCase:c
+          WHERE c.outcome != ""
+          ORDER BY c.updated_at DESC
+          LIMIT max_results;
+  PRINT cases;
+}
+
+INSTALL QUERY gs_transaction_neighborhood
+INSTALL QUERY gs_cases_by_account
+INSTALL QUERY gs_cases_by_device

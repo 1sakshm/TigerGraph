@@ -42,7 +42,7 @@ class Investigator:
             entities.add(context.transaction.device_id)
         if case.patterns:
             start = time.perf_counter()
-            case.related_cases = self.graph.prior_cases(entities)
+            case.related_cases = self.graph.prior_cases(context.transaction.account_id, context.transaction.device_id)
             case.trace.append(TraceEvent(
                 state="CASE_MEMORY_SEARCH", tool="graph.prior_cases",
                 reason="Compare current entities with resolved cases after a graph pattern was found",

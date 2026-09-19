@@ -1,0 +1,20 @@
+// Canonical schema only. Map the HHGOA dataset after reading its README.
+// Apply once to a fresh TigerGraph catalog with: gsql graph/schema.gsql
+CREATE VERTEX Customer (PRIMARY_ID id STRING) WITH primary_id_as_attribute="true"
+CREATE VERTEX Account (PRIMARY_ID id STRING) WITH primary_id_as_attribute="true"
+CREATE VERTEX Device (PRIMARY_ID id STRING) WITH primary_id_as_attribute="true"
+CREATE VERTEX Merchant (PRIMARY_ID id STRING) WITH primary_id_as_attribute="true"
+CREATE VERTEX Transaction (PRIMARY_ID id STRING, account_id STRING, customer_id STRING, device_id STRING, merchant_id STRING, occurred_at STRING, amount DOUBLE, currency STRING, model_score DOUBLE) WITH primary_id_as_attribute="true"
+CREATE VERTEX FraudCase (PRIMARY_ID id STRING, status STRING, transaction_id STRING, pattern STRING, outcome STRING, action STRING, summary STRING, entity_ids_json STRING, payload_json STRING, updated_at STRING) WITH primary_id_as_attribute="true"
+CREATE VERTEX Evidence (PRIMARY_ID id STRING, kind STRING, claim STRING, source STRING, strength DOUBLE, entity_ids_json STRING) WITH primary_id_as_attribute="true"
+
+CREATE DIRECTED EDGE OWNS (FROM Customer, TO Account) WITH REVERSE_EDGE="OWNED_BY"
+CREATE DIRECTED EDGE PERFORMED (FROM Account, TO Transaction) WITH REVERSE_EDGE="PERFORMED_BY"
+CREATE DIRECTED EDGE USED_DEVICE (FROM Transaction, TO Device) WITH REVERSE_EDGE="DEVICE_USED_BY"
+CREATE DIRECTED EDGE AT_MERCHANT (FROM Transaction, TO Merchant) WITH REVERSE_EDGE="MERCHANT_TRANSACTION"
+CREATE DIRECTED EDGE CASE_TX (FROM FraudCase, TO Transaction) WITH REVERSE_EDGE="TX_CASE"
+CREATE DIRECTED EDGE CASE_ACCOUNT (FROM FraudCase, TO Account) WITH REVERSE_EDGE="ACCOUNT_CASE"
+CREATE DIRECTED EDGE CASE_DEVICE (FROM FraudCase, TO Device) WITH REVERSE_EDGE="DEVICE_CASE"
+CREATE DIRECTED EDGE CASE_EVIDENCE (FROM FraudCase, TO Evidence) WITH REVERSE_EDGE="EVIDENCE_CASE"
+
+CREATE GRAPH GraphSentinel (*)
