@@ -19,6 +19,12 @@ To reproduce the artifact locally:
 Then open `http://127.0.0.1:8765/`. The Pages workflow rebuilds this artifact
 on every push to `main`.
 
+At the first deployment, GitHub's edge served the page successfully, but its
+public URL redirected to `http://saksharma.me/TigerGraph/`, and that hostname did
+not resolve in DNS. The repository's Pages `cname` setting is empty. Restore
+DNS for that domain or adjust the account's Pages domain settings before using
+the public URL in a submission; the redirect lies outside this repository.
+
 ## Full investigator service
 
 The root `Dockerfile` packages FastAPI, the interactive synthetic investigator,
@@ -26,6 +32,11 @@ the benchmark viewer, all 20 answer files, and traces. It defaults to
 `GRAPHSENTINEL_MODE=demo`, where actions are simulated and the UI labels the
 fixture as synthetic. The container listens on `$PORT` and exposes
 `GET /api/health` for host health checks.
+
+The `container.yml` workflow builds and smoke-tests this image on GitHub Actions,
+then publishes `ghcr.io/1sakshm/graphsentinel:latest` and a commit-SHA tag. A
+container host can run the image with a persistent `/data` volume. Building an
+image in CI does not itself provide a continuously running web service.
 
 ```bash
 docker build -t graphsentinel .

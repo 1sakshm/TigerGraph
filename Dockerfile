@@ -1,4 +1,5 @@
 FROM python:3.12-slim
+LABEL org.opencontainers.image.source="https://github.com/1sakshm/TigerGraph"
 
 WORKDIR /app
 ENV PYTHONDONTWRITEBYTECODE=1 \

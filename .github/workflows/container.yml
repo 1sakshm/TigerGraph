@@ -1,0 +1,52 @@
+name: Build investigator container
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - .dockerignore
+      - pyproject.toml
+      - graphsentinel/**
+      - frontend/**
+      - cases/**
+      - data/demo.json
+      - .github/workflows/container.yml
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Build image
+        run: |
+          docker build \
+            --tag ghcr.io/1sakshm/graphsentinel:latest \
+            --tag ghcr.io/1sakshm/graphsentinel:${GITHUB_SHA} .
+      - name: Smoke-test API and bundled benchmark
+        run: |
+          docker run -d --name graphsentinel -p 8000:8000 ghcr.io/1sakshm/graphsentinel:latest
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://127.0.0.1:8000/api/health > /tmp/health.json; then break; fi
+            sleep 1
+          done
+          python - <<'PY'
+          import json, urllib.request
+          base = 'http://127.0.0.1:8000'
+          with urllib.request.urlopen(base + '/api/health') as response:
+              health = json.load(response)
+          with urllib.request.urlopen(base + '/api/benchmark') as response:
+              cases = json.load(response)
+          assert health['mode'] == 'synthetic_demo'
+          assert len(cases) == 20
+          print('healthy synthetic investigator; 20 bundled benchmark cases')
+          PY
+      - name: Log in to GitHub Container Registry
+        run: echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u "${{ github.actor }}" --password-stdin
+      - name: Publish image
+        run: docker push ghcr.io/1sakshm/graphsentinel --all-tags
