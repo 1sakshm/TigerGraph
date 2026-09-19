@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>GraphSentinel — Investigation Command Center</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="brand"><div class="brand-mark">◇</div><div><strong>GraphSentinel</strong><span>FRAUD INTELLIGENCE</span></div></div>
+      <div class="top-meta"><span id="mode-badge" class="mode">Checking graph…</span><span class="top-separator"></span><span class="operator">ANALYST CONSOLE <b>●</b> LIVE SESSION</span></div>
+    </header>
+    <div class="workspace">
+      <aside class="sidebar">
+        <div class="sidebar-head"><div><span class="eyebrow">WORKSPACE</span><h2>Investigations</h2></div><span id="case-count" class="count">0</span></div>
+        <form id="new-form" class="new-form">
+          <label for="transaction-id">Transaction ID</label>
+          <div class="new-row"><input id="transaction-id" name="transaction_id" placeholder="e.g. T100" autocomplete="off" required><button type="submit" title="Start investigation" aria-label="Start investigation">↗</button></div>
+          <p id="demo-hint" class="hint"></p>
+        </form>
+        <div class="section-line"><span>CASE QUEUE</span><span id="queue-status">—</span></div>
+        <div id="case-list" class="case-list" aria-live="polite"></div>
+        <div class="sidebar-bottom"><span class="pulse"></span><div><b>Investigation engine</b><small id="engine-status">Connecting…</small></div></div>
+      </aside>
+      <main class="main">
+        <div id="empty-state" class="empty-state"><div class="empty-icon">◇</div><span class="eyebrow">NO ACTIVE CASE</span><h1>Follow the connections.</h1><p>Start with a transaction. GraphSentinel will trace related entities, assemble evidence, assess uncertainty, and propose the next step.</p></div>
+        <div id="case-view" hidden>
+          <div class="case-header"><div><span class="eyebrow">ACTIVE INVESTIGATION <span class="dot">●</span> <span id="case-id"></span></span><h1 id="case-title">Transaction</h1><p id="case-subtitle"></p></div><span id="case-status" class="status"></span></div>
+          <div class="metrics"><div class="metric"><span>RISK SIGNAL</span><strong id="metric-risk">—</strong><small>Evidence weighted estimate</small></div><div class="metric"><span>EVIDENCE CONFIDENCE</span><strong id="metric-confidence">—</strong><small>Heuristic, not calibrated probability</small></div><div class="metric"><span>GRAPH PATTERNS</span><strong id="metric-patterns">—</strong><small>Inspectable motifs</small></div><div class="metric"><span>RELATED CASES</span><strong id="metric-memory">—</strong><small>Historical context</small></div></div>
+          <nav class="tabs" aria-label="Investigation details"><button class="tab active" data-tab="overview">Overview</button><button class="tab" data-tab="graph">Graph</button><button class="tab" data-tab="evidence">Evidence</button><button class="tab" data-tab="timeline">Timeline</button><button class="tab" data-tab="memory">Similar cases</button><button class="tab" data-tab="policy">Policy</button></nav>
+          <div id="tab-content" class="tab-content"></div>
+        </div>
+      </main>
+      <aside class="decision-panel"><div class="decision-top"><span class="eyebrow">DECISION INTELLIGENCE</span><span class="decision-icon">◎</span></div><div id="decision-content" class="decision-content"><h2>No case selected</h2><p>Investigation findings and next actions will appear here.</p></div></aside>
+    </div>
+    <div id="toast" class="toast" role="status" hidden></div>
+  </div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

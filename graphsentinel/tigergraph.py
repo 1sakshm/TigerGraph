@@ -138,7 +138,10 @@ class TigerGraphGraph:
         }
         expected_edges = len(tx_ids) + len(account_ids) + len(device_ids) + len(case.evidence)
         payload = {"vertices": vertices, "edges": {"FraudCase": {case.id: case_edges}}}
+        self.upsert_payload(payload, expected_edges)
+
+    def upsert_payload(self, payload: dict, expected_edges: int) -> None:
         result = self._post(f"/graph/{quote(self.graph_name, safe='')}?atomic_post=true&vertex_must_exist=true", payload)
         stats = result.get("results", [{}])[0]
         if stats.get("accepted_edges", 0) < expected_edges:
-            raise TigerGraphError(f"Case writeback incomplete: {stats.get('accepted_edges', 0)}/{expected_edges} edges")
+            raise TigerGraphError(f"Graph write incomplete: {stats.get('accepted_edges', 0)}/{expected_edges} edges")

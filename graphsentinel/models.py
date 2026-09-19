@@ -1,10 +1,11 @@
 from datetime import datetime, timezone
 from typing import Literal
 
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, ConfigDict, Field
 
 
 class Transaction(BaseModel):
+    model_config = ConfigDict(extra="forbid")
     id: str
     account_id: str
     customer_id: str | None = None
@@ -31,6 +32,7 @@ class PriorCase(BaseModel):
     outcome: str
     action: str
     summary: str
+    similarity: float = Field(default=0.0, ge=0, le=1)
 
 
 class Neighborhood(BaseModel):
@@ -53,6 +55,7 @@ class TraceEvent(BaseModel):
     at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     state: str
     tool: str | None = None
+    parameters: dict = Field(default_factory=dict)
     reason: str
     result: str
     latency_ms: float | None = None
@@ -88,4 +91,6 @@ class CaseRecord(BaseModel):
     actions_taken: list[str] = Field(default_factory=list)
     outcome: str | None = None
     analyst_feedback: str | None = None
+    reasoning_summary: str = ""
+    stop_reason: str = ""
     graph: dict = Field(default_factory=dict)

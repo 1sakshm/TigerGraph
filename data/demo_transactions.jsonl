@@ -1,0 +1,4 @@
+{"id":"T100","account_id":"A1","customer_id":"C1","device_id":"D_NEW","merchant_id":"M_HIGH","occurred_at":"2026-09-19T10:31:00Z","amount":920,"currency":"USD","model_score":0.58}
+{"id":"T101","account_id":"A2","customer_id":"C2","device_id":"D_NEW","merchant_id":"M_HIGH","occurred_at":"2026-09-19T10:24:00Z","amount":870,"currency":"USD","model_score":0.81}
+{"id":"T102","account_id":"A1","customer_id":"C1","device_id":"D_OLD","merchant_id":"M_GROCERY","occurred_at":"2026-09-18T12:00:00Z","amount":42,"currency":"USD","model_score":0.04}
+{"id":"T103","account_id":"A3","customer_id":"C3","device_id":"D_NEW","merchant_id":"M_HIGH","occurred_at":"2026-09-19T10:26:00Z","amount":780,"currency":"USD","model_score":0.76}

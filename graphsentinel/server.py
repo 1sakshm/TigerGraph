@@ -7,6 +7,7 @@ from graphsentinel.api import create_app
 from graphsentinel.graph import FixtureGraph
 from graphsentinel.store import CaseStore
 from graphsentinel.tigergraph import TigerGraphGraph
+from graphsentinel.synthesis import OpenAISummarizer
 
 
 def create_from_env():
@@ -24,7 +25,10 @@ def create_from_env():
     else:
         raise RuntimeError(f"Unknown GRAPHSENTINEL_MODE: {mode}")
     db = Path(os.environ.get("GRAPHSENTINEL_DB", "data/cases.sqlite"))
-    return create_app(graph, CaseStore(db), public_mode)
+    key = os.environ.get("OPENAI_API_KEY")
+    model = os.environ.get("OPENAI_MODEL")
+    summarizer = OpenAISummarizer(key, model) if key and model else None
+    return create_app(graph, CaseStore(db), public_mode, summarizer=summarizer)
 
 
 if __name__ == "__main__":

@@ -1,0 +1,16 @@
+{
+  "provenance": "SYNTHETIC_DEMO_ONLY",
+  "cases": [
+    {
+      "case_id": "sample_01",
+      "transaction_id": "T100",
+      "trigger": "risk_model",
+      "additional_evidence": {"kind": "customer_confirmation", "value": "denied"}
+    },
+    {
+      "case_id": "sample_02",
+      "transaction_id": "T102",
+      "trigger": "analyst_request"
+    }
+  ]
+}

@@ -68,3 +68,11 @@ def test_graph_outage_is_reported_as_service_unavailable(tmp_path):
     response = api.post("/api/investigations", json={"transaction_id": "T100", "trigger": "risk_model"})
     assert response.status_code == 503
     assert "connection unavailable" in response.json()["detail"]
+
+
+def test_command_center_assets_are_served(tmp_path):
+    api = client(tmp_path)
+    page = api.get("/")
+    assert page.status_code == 200
+    assert "GraphSentinel" in page.text
+    assert api.get("/static/app.js").status_code == 200

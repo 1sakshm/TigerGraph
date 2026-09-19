@@ -6,6 +6,7 @@ from uuid import uuid4
 from graphsentinel.graph import GraphPort
 from graphsentinel.models import CaseRecord, Evidence, Neighborhood, Recommendation, TraceEvent
 from graphsentinel.policy import PolicyEngine
+from graphsentinel.synthesis import OpenAISummarizer, SummaryError
 
 
 def _entropy(probability: float) -> float:
@@ -15,9 +16,10 @@ def _entropy(probability: float) -> float:
 
 
 class Investigator:
-    def __init__(self, graph: GraphPort, policy: PolicyEngine):
+    def __init__(self, graph: GraphPort, policy: PolicyEngine, summarizer: OpenAISummarizer | None = None):
         self.graph = graph
         self.policy = policy
+        self.summarizer = summarizer
 
     def investigate(self, transaction_id: str, trigger: str) -> CaseRecord:
         if not transaction_id.strip() or not trigger.strip():
@@ -32,6 +34,7 @@ class Investigator:
         )
         case.trace.append(TraceEvent(
             state="INITIAL_RETRIEVAL", tool="graph.neighborhood",
+            parameters={"transaction_id": transaction_id, "limit": 50},
             reason="Retrieve the transaction, account history and shared-device paths",
             result=f"{len(context.account_history)} account transactions; {len(context.device_peers)} device peers",
             latency_ms=round((time.perf_counter() - start) * 1000, 2),
@@ -42,9 +45,19 @@ class Investigator:
             entities.add(context.transaction.device_id)
         if case.patterns:
             start = time.perf_counter()
-            case.related_cases = self.graph.prior_cases(context.transaction.account_id, context.transaction.device_id)
+            retrieved = self.graph.prior_cases(context.transaction.account_id, context.transaction.device_id)
+            case.related_cases = []
+            for prior in retrieved:
+                historical_entities = set(prior.entity_ids)
+                union = entities | historical_entities
+                overlap = len(entities & historical_entities) / len(union) if union else 0
+                pattern_overlap = bool(set(case.patterns) & {prior.pattern})
+                similarity = round(min(1.0, 0.7 * overlap + 0.3 * pattern_overlap), 3)
+                case.related_cases.append(prior.model_copy(update={"similarity": similarity}))
+            case.related_cases.sort(key=lambda item: (-item.similarity, item.id))
             case.trace.append(TraceEvent(
                 state="CASE_MEMORY_SEARCH", tool="graph.prior_cases",
+                parameters={"account_id": context.transaction.account_id, "device_id": context.transaction.device_id},
                 reason="Compare current entities with resolved cases after a graph pattern was found",
                 result=f"{len(case.related_cases)} related cases",
                 latency_ms=round((time.perf_counter() - start) * 1000, 2),
@@ -62,7 +75,15 @@ class Investigator:
             raise ValueError("Supported evidence: customer_confirmation = confirmed or denied")
         if any(e.kind == "customer_confirmation" for e in case.evidence):
             raise ValueError("Customer confirmation already recorded")
+        start = time.perf_counter()
         context = self.graph.neighborhood(case.transaction_id, limit=50)
+        case.trace.append(TraceEvent(
+            state="REASSESSMENT", tool="graph.neighborhood",
+            parameters={"transaction_id": case.transaction_id, "limit": 50},
+            reason="Refresh transaction context before incorporating new evidence",
+            result=f"{len(context.account_history)} account transactions; {len(context.device_peers)} device peers",
+            latency_ms=round((time.perf_counter() - start) * 1000, 2),
+        ))
         self._add(case, kind, f"Analyst recorded customer response: transaction {value}",
                   [case.transaction_id, context.transaction.account_id], 0.95,
                   "analyst_recorded_customer_response")
@@ -207,8 +228,34 @@ class Investigator:
         case.recommendations.append(recommendation)
         case.status = ("APPROVAL_REQUIRED" if gate.approval_required else
                        "WAITING_FOR_EVIDENCE" if action.startswith("REQUEST_") else "RECOMMENDATION_READY")
+        if gate.approval_required:
+            case.stop_reason = f"Investigation stopped for human approval under {gate.reference}."
+        elif action.startswith("REQUEST_"):
+            case.stop_reason = "Investigation paused for customer confirmation; further graph expansion has lower estimated information value."
+        else:
+            case.stop_reason = "Investigation stopped with a low impact recommendation; current evidence does not justify deeper expansion."
         case.updated_at = datetime.now(timezone.utc)
         case.trace.append(TraceEvent(
             state="ACTION_SELECTION", reason="Apply deterministic policy to evidence based proposal",
             result=f"{action}; {status}; {gate.reference}",
         ))
+        case.trace.append(TraceEvent(
+            state="STOPPING_CHECK", reason="Bound investigation depth and hand control to evidence or analyst when needed",
+            result=case.stop_reason,
+        ))
+        cited = ", ".join(f"[{item.id}] {item.claim}" for item in case.evidence)
+        case.reasoning_summary = f"{cited}. {reason} Remaining uncertainty: {', '.join(case.missing_evidence) or 'none identified'}."
+        if self.summarizer:
+            start = time.perf_counter()
+            try:
+                case.reasoning_summary = self.summarizer.summarize(case)
+                result = "Evidence-cited LLM narrative accepted"
+            except SummaryError as error:
+                result = f"Deterministic fallback used: {error}"
+            case.trace.append(TraceEvent(
+                state="LLM_SYNTHESIS", tool="openai.responses",
+                parameters={"case_id": case.id, "evidence_count": len(case.evidence)},
+                reason="Summarize a structured evidence package without altering policy or scores",
+                result=result,
+                latency_ms=round((time.perf_counter() - start) * 1000, 2),
+            ))

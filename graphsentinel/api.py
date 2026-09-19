@@ -4,6 +4,7 @@ from typing import Literal
 
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel, Field
 
 from graphsentinel.graph import GraphPort
@@ -12,6 +13,7 @@ from graphsentinel.models import CaseRecord, TraceEvent
 from graphsentinel.policy import PolicyEngine
 from graphsentinel.store import CaseStore
 from graphsentinel.tigergraph import TigerGraphError
+from graphsentinel.synthesis import OpenAISummarizer
 
 
 class InvestigationRequest(BaseModel):
@@ -34,9 +36,9 @@ class CloseRequest(BaseModel):
     analyst_feedback: str = Field(default="", max_length=2000)
 
 
-def create_app(graph: GraphPort, store: CaseStore, mode: str) -> FastAPI:
+def create_app(graph: GraphPort, store: CaseStore, mode: str, summarizer: OpenAISummarizer | None = None) -> FastAPI:
     api = FastAPI(title="GraphSentinel", version="0.1.0")
-    investigator = Investigator(graph, PolicyEngine())
+    investigator = Investigator(graph, PolicyEngine(), summarizer=summarizer)
 
     @api.exception_handler(TigerGraphError)
     def graph_unavailable(_request, error: TigerGraphError):
@@ -116,6 +118,7 @@ def create_app(graph: GraphPort, store: CaseStore, mode: str) -> FastAPI:
         return persist(case)
 
     ui = Path(__file__).parents[1] / "frontend" / "index.html"
+    api.mount("/static", StaticFiles(directory=ui.parent), name="static")
 
     @api.get("/", include_in_schema=False)
     def index():

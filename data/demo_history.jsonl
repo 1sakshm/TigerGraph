@@ -1,0 +1,1 @@
+{"id":"HIST-1","account_ids":["A2"],"device_ids":["D_NEW"],"transaction_ids":["T101"],"pattern":"shared_device_cluster","outcome":"confirmed_fraud","action":"BLOCK_CARD","summary":"Customer denied a high-value transaction from this device."}

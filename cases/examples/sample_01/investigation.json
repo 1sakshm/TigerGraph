@@ -1,0 +1,329 @@
+{
+  "id": "CASE-8E9DFA832636",
+  "transaction_id": "T100",
+  "trigger": "risk_model",
+  "status": "APPROVAL_REQUIRED",
+  "created_at": "2026-09-19T13:51:22.830313Z",
+  "updated_at": "2026-09-19T13:51:22.842696Z",
+  "evidence": [
+    {
+      "id": "E-001",
+      "kind": "model_score",
+      "claim": "Upstream fraud model score is 0.58",
+      "entity_ids": [
+        "T100"
+      ],
+      "source": "transaction model score",
+      "strength": 0.58
+    },
+    {
+      "id": "E-002",
+      "kind": "new_device",
+      "claim": "This device is absent from the account's available transaction history",
+      "entity_ids": [
+        "T100",
+        "A1",
+        "D_NEW"
+      ],
+      "source": "TigerGraph account history",
+      "strength": 0.7
+    },
+    {
+      "id": "E-003",
+      "kind": "shared_device",
+      "claim": "Device D_NEW is used by 2 other accounts in the retrieved graph",
+      "entity_ids": [
+        "T100",
+        "D_NEW",
+        "A2",
+        "A3"
+      ],
+      "source": "TigerGraph device traversal",
+      "strength": 0.75
+    },
+    {
+      "id": "E-004",
+      "kind": "amount_anomaly",
+      "claim": "Amount 920.00 is at least three times the available account median 42.00",
+      "entity_ids": [
+        "T100",
+        "T102"
+      ],
+      "source": "TigerGraph account history",
+      "strength": 0.65
+    },
+    {
+      "id": "E-005",
+      "kind": "prior_confirmed_case",
+      "claim": "Related resolved case HIST-1 was confirmed fraud; this is supporting context, not a label for this transaction",
+      "entity_ids": [
+        "HIST-1",
+        "D_NEW"
+      ],
+      "source": "TigerGraph case memory",
+      "strength": 0.7
+    },
+    {
+      "id": "E-006",
+      "kind": "customer_confirmation",
+      "claim": "Analyst recorded customer response: transaction denied",
+      "entity_ids": [
+        "T100",
+        "A1"
+      ],
+      "source": "analyst_recorded_customer_response",
+      "strength": 0.95
+    }
+  ],
+  "trace": [
+    {
+      "at": "2026-09-19T13:51:22.830313Z",
+      "state": "INITIAL_RETRIEVAL",
+      "tool": "graph.neighborhood",
+      "parameters": {
+        "transaction_id": "T100",
+        "limit": 50
+      },
+      "reason": "Retrieve the transaction, account history and shared-device paths",
+      "result": "1 account transactions; 2 device peers",
+      "latency_ms": 1.84
+    },
+    {
+      "at": "2026-09-19T13:51:22.831169Z",
+      "state": "PATTERN_ANALYSIS",
+      "tool": null,
+      "parameters": {},
+      "reason": "Apply inspectable graph motif rules",
+      "result": "3 patterns; 4 evidence items",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.831169Z",
+      "state": "CASE_MEMORY_SEARCH",
+      "tool": "graph.prior_cases",
+      "parameters": {
+        "account_id": "A1",
+        "device_id": "D_NEW"
+      },
+      "reason": "Compare current entities with resolved cases after a graph pattern was found",
+      "result": "1 related cases",
+      "latency_ms": 0.19
+    },
+    {
+      "at": "2026-09-19T13:51:22.831169Z",
+      "state": "UNCERTAINTY_ASSESSMENT",
+      "tool": null,
+      "parameters": {},
+      "reason": "Separate suspiciousness from completeness of evidence; confidence is a heuristic, not calibrated probability",
+      "result": "risk=0.842; confidence=0.710",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.831169Z",
+      "state": "EVIDENCE_REQUEST",
+      "tool": null,
+      "parameters": {},
+      "reason": "Select the evidence with greatest heuristic expected entropy reduction",
+      "result": "customer_confirmation: 0.164",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.832191Z",
+      "state": "ACTION_SELECTION",
+      "tool": null,
+      "parameters": {},
+      "reason": "Apply deterministic policy to evidence based proposal",
+      "result": "REQUEST_CUSTOMER_CONFIRMATION; proposed; GS-POL-01",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.832191Z",
+      "state": "STOPPING_CHECK",
+      "tool": null,
+      "parameters": {},
+      "reason": "Bound investigation depth and hand control to evidence or analyst when needed",
+      "result": "Investigation paused for customer confirmation; further graph expansion has lower estimated information value.",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.842696Z",
+      "state": "REASSESSMENT",
+      "tool": "graph.neighborhood",
+      "parameters": {
+        "transaction_id": "T100",
+        "limit": 50
+      },
+      "reason": "Refresh transaction context before incorporating new evidence",
+      "result": "1 account transactions; 2 device peers",
+      "latency_ms": 0.13
+    },
+    {
+      "at": "2026-09-19T13:51:22.842696Z",
+      "state": "REASSESSMENT",
+      "tool": null,
+      "parameters": {},
+      "reason": "New customer response resolves the key identity uncertainty",
+      "result": "Customer denied transaction",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.842696Z",
+      "state": "UNCERTAINTY_ASSESSMENT",
+      "tool": null,
+      "parameters": {},
+      "reason": "Separate suspiciousness from completeness of evidence; confidence is a heuristic, not calibrated probability",
+      "result": "risk=0.950; confidence=0.950",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.842696Z",
+      "state": "ACTION_SELECTION",
+      "tool": null,
+      "parameters": {},
+      "reason": "Apply deterministic policy to evidence based proposal",
+      "result": "BLOCK_CARD; pending_approval; GS-POL-04",
+      "latency_ms": null
+    },
+    {
+      "at": "2026-09-19T13:51:22.842696Z",
+      "state": "STOPPING_CHECK",
+      "tool": null,
+      "parameters": {},
+      "reason": "Bound investigation depth and hand control to evidence or analyst when needed",
+      "result": "Investigation stopped for human approval under GS-POL-04.",
+      "latency_ms": null
+    }
+  ],
+  "patterns": [
+    "new_device",
+    "shared_device_cluster",
+    "amount_anomaly"
+  ],
+  "related_cases": [
+    {
+      "id": "HIST-1",
+      "entity_ids": [
+        "D_NEW",
+        "A2",
+        "T101"
+      ],
+      "pattern": "shared_device_cluster",
+      "outcome": "confirmed_fraud",
+      "action": "BLOCK_CARD",
+      "summary": "Customer denied a high-value transaction from this device.",
+      "similarity": 0.44
+    }
+  ],
+  "risk": 0.95,
+  "confidence": 0.95,
+  "hypotheses": {
+    "account_takeover": 0.741,
+    "other_fraud": 0.209,
+    "legitimate_activity": 0.05
+  },
+  "missing_evidence": [],
+  "recommendations": [
+    {
+      "action": "REQUEST_CUSTOMER_CONFIRMATION",
+      "reason": "Risk is elevated but confidence is 71%. Customer Confirmation has the highest estimated information value (0.164); confirmation supports monitoring, denial supports a block proposal.",
+      "evidence_ids": [
+        "E-001",
+        "E-002",
+        "E-003",
+        "E-004",
+        "E-005"
+      ],
+      "risk": 0.842,
+      "confidence": 0.71,
+      "policy_reference": "GS-POL-01",
+      "approval_required": false,
+      "status": "proposed"
+    },
+    {
+      "action": "BLOCK_CARD",
+      "reason": "Customer denial plus linked graph evidence supports a protective card block; analyst approval is required.",
+      "evidence_ids": [
+        "E-001",
+        "E-002",
+        "E-003",
+        "E-004",
+        "E-005",
+        "E-006"
+      ],
+      "risk": 0.95,
+      "confidence": 0.95,
+      "policy_reference": "GS-POL-04",
+      "approval_required": true,
+      "status": "pending_approval"
+    }
+  ],
+  "actions_taken": [],
+  "outcome": null,
+  "analyst_feedback": null,
+  "reasoning_summary": "[E-001] Upstream fraud model score is 0.58, [E-002] This device is absent from the account's available transaction history, [E-003] Device D_NEW is used by 2 other accounts in the retrieved graph, [E-004] Amount 920.00 is at least three times the available account median 42.00, [E-005] Related resolved case HIST-1 was confirmed fraud; this is supporting context, not a label for this transaction, [E-006] Analyst recorded customer response: transaction denied. Customer denial plus linked graph evidence supports a protective card block; analyst approval is required. Remaining uncertainty: none identified.",
+  "stop_reason": "Investigation stopped for human approval under GS-POL-04.",
+  "graph": {
+    "nodes": [
+      {
+        "id": "T100",
+        "type": "Transaction"
+      },
+      {
+        "id": "A1",
+        "type": "Account"
+      },
+      {
+        "id": "D_NEW",
+        "type": "Device"
+      },
+      {
+        "id": "A2",
+        "type": "Account"
+      },
+      {
+        "id": "T101",
+        "type": "Transaction"
+      },
+      {
+        "id": "A3",
+        "type": "Account"
+      },
+      {
+        "id": "T103",
+        "type": "Transaction"
+      }
+    ],
+    "edges": [
+      {
+        "source": "A1",
+        "target": "T100",
+        "type": "PERFORMED"
+      },
+      {
+        "source": "T100",
+        "target": "D_NEW",
+        "type": "USED_DEVICE"
+      },
+      {
+        "source": "A2",
+        "target": "T101",
+        "type": "PERFORMED"
+      },
+      {
+        "source": "T101",
+        "target": "D_NEW",
+        "type": "USED_DEVICE"
+      },
+      {
+        "source": "A3",
+        "target": "T103",
+        "type": "PERFORMED"
+      },
+      {
+        "source": "T103",
+        "target": "D_NEW",
+        "type": "USED_DEVICE"
+      }
+    ]
+  }
+}

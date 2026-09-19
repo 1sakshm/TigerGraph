@@ -1,0 +1,10 @@
+{
+  "case_count": 2,
+  "completed": 2,
+  "failures": [],
+  "graph_queries": 5,
+  "mean_latency_ms": 18.77,
+  "accuracy": null,
+  "accuracy_note": "Unavailable without benchmark ground truth and the actual dataset",
+  "mode": "synthetic_demo"
+}

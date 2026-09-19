@@ -1,0 +1,123 @@
+{
+  "benchmark_case_id": "sample_01",
+  "internal_case_id": "CASE-8E9DFA832636",
+  "transaction_id": "T100",
+  "risk": 0.95,
+  "confidence": 0.95,
+  "hypotheses": {
+    "account_takeover": 0.741,
+    "other_fraud": 0.209,
+    "legitimate_activity": 0.05
+  },
+  "patterns": [
+    "new_device",
+    "shared_device_cluster",
+    "amount_anomaly"
+  ],
+  "evidence": [
+    {
+      "id": "E-001",
+      "kind": "model_score",
+      "claim": "Upstream fraud model score is 0.58",
+      "entity_ids": [
+        "T100"
+      ],
+      "source": "transaction model score",
+      "strength": 0.58
+    },
+    {
+      "id": "E-002",
+      "kind": "new_device",
+      "claim": "This device is absent from the account's available transaction history",
+      "entity_ids": [
+        "T100",
+        "A1",
+        "D_NEW"
+      ],
+      "source": "TigerGraph account history",
+      "strength": 0.7
+    },
+    {
+      "id": "E-003",
+      "kind": "shared_device",
+      "claim": "Device D_NEW is used by 2 other accounts in the retrieved graph",
+      "entity_ids": [
+        "T100",
+        "D_NEW",
+        "A2",
+        "A3"
+      ],
+      "source": "TigerGraph device traversal",
+      "strength": 0.75
+    },
+    {
+      "id": "E-004",
+      "kind": "amount_anomaly",
+      "claim": "Amount 920.00 is at least three times the available account median 42.00",
+      "entity_ids": [
+        "T100",
+        "T102"
+      ],
+      "source": "TigerGraph account history",
+      "strength": 0.65
+    },
+    {
+      "id": "E-005",
+      "kind": "prior_confirmed_case",
+      "claim": "Related resolved case HIST-1 was confirmed fraud; this is supporting context, not a label for this transaction",
+      "entity_ids": [
+        "HIST-1",
+        "D_NEW"
+      ],
+      "source": "TigerGraph case memory",
+      "strength": 0.7
+    },
+    {
+      "id": "E-006",
+      "kind": "customer_confirmation",
+      "claim": "Analyst recorded customer response: transaction denied",
+      "entity_ids": [
+        "T100",
+        "A1"
+      ],
+      "source": "analyst_recorded_customer_response",
+      "strength": 0.95
+    }
+  ],
+  "missing_evidence": [],
+  "before_additional_evidence": {
+    "action": "REQUEST_CUSTOMER_CONFIRMATION",
+    "reason": "Risk is elevated but confidence is 71%. Customer Confirmation has the highest estimated information value (0.164); confirmation supports monitoring, denial supports a block proposal.",
+    "evidence_ids": [
+      "E-001",
+      "E-002",
+      "E-003",
+      "E-004",
+      "E-005"
+    ],
+    "risk": 0.842,
+    "confidence": 0.71,
+    "policy_reference": "GS-POL-01",
+    "approval_required": false,
+    "status": "proposed"
+  },
+  "after_additional_evidence": {
+    "action": "BLOCK_CARD",
+    "reason": "Customer denial plus linked graph evidence supports a protective card block; analyst approval is required.",
+    "evidence_ids": [
+      "E-001",
+      "E-002",
+      "E-003",
+      "E-004",
+      "E-005",
+      "E-006"
+    ],
+    "risk": 0.95,
+    "confidence": 0.95,
+    "policy_reference": "GS-POL-04",
+    "approval_required": true,
+    "status": "pending_approval"
+  },
+  "approval_route": "human_analyst",
+  "actions_taken": []
+}

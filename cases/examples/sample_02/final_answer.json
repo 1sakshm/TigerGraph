@@ -1,0 +1,71 @@
+{
+  "benchmark_case_id": "sample_02",
+  "internal_case_id": "CASE-ED4F2955BB2A",
+  "transaction_id": "T102",
+  "risk": 0.246,
+  "confidence": 0.5,
+  "hypotheses": {
+    "account_takeover": 0.192,
+    "other_fraud": 0.054,
+    "legitimate_activity": 0.754
+  },
+  "patterns": [
+    "new_device"
+  ],
+  "evidence": [
+    {
+      "id": "E-001",
+      "kind": "model_score",
+      "claim": "Upstream fraud model score is 0.04",
+      "entity_ids": [
+        "T102"
+      ],
+      "source": "transaction model score",
+      "strength": 0.04
+    },
+    {
+      "id": "E-002",
+      "kind": "new_device",
+      "claim": "This device is absent from the account's available transaction history",
+      "entity_ids": [
+        "T102",
+        "A1",
+        "D_OLD"
+      ],
+      "source": "TigerGraph account history",
+      "strength": 0.7
+    }
+  ],
+  "missing_evidence": [
+    "customer_confirmation",
+    "verified_device_history"
+  ],
+  "before_additional_evidence": {
+    "action": "MONITOR_ACCOUNT",
+    "reason": "Available graph evidence does not justify a high impact intervention.",
+    "evidence_ids": [
+      "E-001",
+      "E-002"
+    ],
+    "risk": 0.246,
+    "confidence": 0.5,
+    "policy_reference": "GS-POL-02",
+    "approval_required": false,
+    "status": "proposed"
+  },
+  "after_additional_evidence": {
+    "action": "MONITOR_ACCOUNT",
+    "reason": "Available graph evidence does not justify a high impact intervention.",
+    "evidence_ids": [
+      "E-001",
+      "E-002"
+    ],
+    "risk": 0.246,
+    "confidence": 0.5,
+    "policy_reference": "GS-POL-02",
+    "approval_required": false,
+    "status": "proposed"
+  },
+  "approval_route": "automated_proposal",
+  "actions_taken": []
+}
