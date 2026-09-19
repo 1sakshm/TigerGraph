@@ -76,3 +76,16 @@ def test_command_center_assets_are_served(tmp_path):
     assert page.status_code == 200
     assert "GraphSentinel" in page.text
     assert api.get("/static/app.js").status_code == 200
+
+
+def test_benchmark_api_serves_exact_answer_and_trace(tmp_path):
+    api = client(tmp_path)
+    rows = api.get("/api/benchmark").json()
+    assert len(rows) == 20
+    answer = api.get("/api/benchmark/HHG-019")
+    assert answer.status_code == 200
+    assert answer.json()["case"]["written_to_graph"] is False
+    assert answer.json()["case"]["evidence"][0]["source"] == "external"
+    assert api.get("/api/benchmark/HHG-019/trace").json()
+    assert api.get("/api/benchmark/%2E%2E").status_code in {400, 404}
+    assert api.get("/benchmark").status_code == 200

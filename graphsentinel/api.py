@@ -1,5 +1,6 @@
 from datetime import datetime, timezone
 from pathlib import Path
+import re
 from typing import Literal
 
 from fastapi import FastAPI, HTTPException
@@ -14,6 +15,7 @@ from graphsentinel.policy import PolicyEngine
 from graphsentinel.store import CaseStore
 from graphsentinel.tigergraph import TigerGraphError
 from graphsentinel.synthesis import OpenAISummarizer
+from graphsentinel.hhgoa.contracts import Answer
 
 
 class InvestigationRequest(BaseModel):
@@ -62,6 +64,41 @@ def create_app(graph: GraphPort, store: CaseStore, mode: str, summarizer: OpenAI
     @api.get("/api/health")
     def health():
         return {"status": "ok", "mode": mode, "graph_authoritative": mode == "tigergraph"}
+
+    benchmark_dir = Path(__file__).parents[1] / "cases"
+
+    @api.get("/api/benchmark")
+    def benchmark_cases():
+        summaries = []
+        for path in sorted(benchmark_dir.glob("HHG-???.json")):
+            answer = Answer.model_validate_json(path.read_text(encoding="utf-8"))
+            summaries.append({
+                "case_id": answer.case_id, "verdict": answer.case.verdict,
+                "pattern": answer.case.pattern, "fraud_probability": answer.case.fraud_probability,
+                "status": answer.case.status, "written_to_graph": answer.case.written_to_graph,
+                "initial_action": answer.next_best_actions.initial[0].action,
+                "final_action": answer.next_best_actions.final[0].action,
+            })
+        return summaries
+
+    @api.get("/api/benchmark/{case_id}", response_model=Answer)
+    def benchmark_case(case_id: str):
+        if not re.fullmatch(r"HHG-\d{3}", case_id):
+            raise HTTPException(400, "Invalid benchmark case ID")
+        path = benchmark_dir / f"{case_id}.json"
+        if not path.exists():
+            raise HTTPException(404, "Benchmark answer not found")
+        return Answer.model_validate_json(path.read_text(encoding="utf-8"))
+
+    @api.get("/api/benchmark/{case_id}/trace")
+    def benchmark_trace(case_id: str):
+        if not re.fullmatch(r"HHG-\d{3}", case_id):
+            raise HTTPException(400, "Invalid benchmark case ID")
+        path = benchmark_dir / "investigations" / f"{case_id}.json"
+        if not path.exists():
+            raise HTTPException(404, "Benchmark trace not found")
+        import json
+        return json.loads(path.read_text(encoding="utf-8"))
 
     @api.post("/api/investigations", response_model=CaseRecord, status_code=201)
     def investigate(request: InvestigationRequest):
@@ -123,5 +160,9 @@ def create_app(graph: GraphPort, store: CaseStore, mode: str, summarizer: OpenAI
     @api.get("/", include_in_schema=False)
     def index():
         return FileResponse(ui)
+
+    @api.get("/benchmark", include_in_schema=False)
+    def benchmark_page():
+        return FileResponse(ui.parent / "benchmark.html")
 
     return api
