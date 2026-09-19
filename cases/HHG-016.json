@@ -2,8 +2,8 @@
   "case_id": "HHG-016",
   "case": {
     "status": "open",
-    "verdict": "uncertain",
-    "fraud_probability": 0.716,
+    "verdict": "fraud",
+    "fraud_probability": 0.88,
     "pattern": "card_not_present_new_device",
     "pattern_description": "",
     "affected_txn_ids": [
@@ -68,7 +68,7 @@
       }
     ],
     "similar_prior_cases": [],
-    "summary": "Transaction 3534820 has card not present new device indicators, but the available evidence supports only a 72% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3534820 shows card not present new device with 1 transaction(s) in the bounded episode. The customer report and transaction sequence supports a 88% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -108,8 +108,8 @@
     "total_amount_usd": 0.0,
     "activity_dates": []
   },
-  "stop_reason": "Further available graph expansion has low value; the case awaits customer or analyst clarification.",
+  "stop_reason": "Strong independent evidence supports the current proposal; human approval gates high-impact actions.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.1454
+  "latency_s": 0.1177
 }

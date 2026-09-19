@@ -3,8 +3,8 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.603,
-    "pattern": "card_not_present_new_device",
+    "fraud_probability": 0.361,
+    "pattern": "none",
     "pattern_description": "",
     "affected_txn_ids": [
       "3526826"
@@ -87,7 +87,7 @@
       "CC-4294",
       "CC-3761"
     ],
-    "summary": "Transaction 3526826 has card not present new device indicators, but the available evidence supports only a 60% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3526826 has none indicators, but the available evidence supports only a 36% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -141,5 +141,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.1782
+  "latency_s": 0.1188
 }

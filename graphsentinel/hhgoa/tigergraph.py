@@ -65,6 +65,8 @@ class GraphPayload:
         self.vertex("Transaction", tx_id, {
             "identity_status": row.get("identity_status"),
             "proxy_status": row.get("proxy_status"),
+            "match_status": row.get("match_status"),
+            "device_type": row.get("device_type"),
         })
         if any(row.get(key) for key in ("device_info", "os", "browser", "screen")):
             profile = device_profile_id(row)
@@ -124,6 +126,15 @@ class GraphPayload:
     def body(self) -> dict:
         return {"vertices": self.vertices, "edges": self.edges}
 
+    def vertex_count(self) -> int:
+        return sum(len(vertices) for vertices in self.vertices.values())
+
+    def edge_count(self) -> int:
+        return sum(len(targets) for sources in self.edges.values()
+                   for edge_types in sources.values()
+                   for target_types in edge_types.values()
+                   for targets in target_types.values())
+
 
 class HHGOATigerGraph:
     ALLOWED_QUERIES = {"hh_transaction_context", "hh_customer_window",
@@ -165,11 +176,32 @@ class HHGOATigerGraph:
             **answer.model_dump(),
             "case": {**answer.case.model_dump(), "written_to_graph": True, "graph_case_id": answer.case_id},
         })
-        payload = GraphPayload()
-        payload.add_answer(candidate, trigger)
-        result = self.upsert(payload, require_existing=True)
-        expected = len(payload.vertices.get("InvestigationCase", {})) + len(payload.vertices.get("CaseEvidence", {}))
+        # With vertex_must_exist=true, RESTPP does not count vertices created in
+        # the same request as existing edge endpoints. Stage a truthful case,
+        # attach every edge, then mark the stored answer as graph-backed.
+        staged = GraphPayload()
+        staged.add_answer(answer, trigger)
+        vertices = GraphPayload()
+        vertices.vertices = staged.vertices
+        result = self.upsert(vertices)
         stats = result.get("results", [{}])[0]
-        if stats.get("accepted_vertices", 0) < expected:
-            raise RuntimeError(f"Case writeback incomplete: {stats}")
+        if stats.get("accepted_vertices", 0) < vertices.vertex_count():
+            raise RuntimeError(f"Case vertex writeback incomplete: {stats}")
+
+        edges = GraphPayload()
+        edges.edges = staged.edges
+        result = self.upsert(edges, require_existing=True)
+        stats = result.get("results", [{}])[0]
+        if stats.get("accepted_edges", 0) < edges.edge_count():
+            raise RuntimeError(f"Case edge writeback incomplete: {stats}")
+
+        committed = GraphPayload()
+        committed.vertex("InvestigationCase", answer.case_id, {
+            "answer_json": candidate.model_dump_json(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+        })
+        result = self.upsert(committed)
+        stats = result.get("results", [{}])[0]
+        if stats.get("accepted_vertices", 0) < 1:
+            raise RuntimeError(f"Case completion writeback incomplete: {stats}")
         return candidate

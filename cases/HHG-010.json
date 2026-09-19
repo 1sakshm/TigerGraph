@@ -3,8 +3,8 @@
   "case": {
     "status": "escalated",
     "verdict": "uncertain",
-    "fraud_probability": 0.717,
-    "pattern": "card_not_present_new_device",
+    "fraud_probability": 0.352,
+    "pattern": "none",
     "pattern_description": "",
     "affected_txn_ids": [
       "3506725"
@@ -76,7 +76,7 @@
     "similar_prior_cases": [
       "CC-0873"
     ],
-    "summary": "Transaction 3506725 has card not present new device indicators, but the available evidence supports only a 72% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3506725 has none indicators, but the available evidence supports only a 35% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -140,5 +140,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.1065
+  "latency_s": 0.1069
 }

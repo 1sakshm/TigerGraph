@@ -3,7 +3,7 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.609,
+    "fraud_probability": 0.353,
     "pattern": "none",
     "pattern_description": "",
     "affected_txn_ids": [
@@ -51,7 +51,7 @@
     "similar_prior_cases": [
       "CC-4160"
     ],
-    "summary": "Transaction 3478782 has none indicators, but the available evidence supports only a 61% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3478782 has none indicators, but the available evidence supports only a 35% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -105,5 +105,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 4,
   "tokens": 0,
-  "latency_s": 0.0381
+  "latency_s": 0.0589
 }

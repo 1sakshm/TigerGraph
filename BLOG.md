@@ -26,7 +26,9 @@ The supplied rules R1–R10 determine action routes. `BLOCK_CARD` and `FILE_REPO
 
 ## What worked and what is still open
 
-The repository produces all 20 required answer files and validates their shape, cited IDs, approval routes, and SAR consistency. The audit currently records 101 evidence items, 11 cases with changed action lists, and three report drafts. The polished benchmark browser and interactive analyst UI are working locally. The full import payload builder has processed all supplied rows in dry-run mode.
+The repository produces all 20 required answer files and validates their shape, cited IDs, approval routes, and SAR consistency. The audit currently records 99 evidence items, 10 cases with changed action lists, and three report drafts. The polished benchmark browser and interactive analyst UI are working locally. The full import payload builder has processed all supplied rows in dry-run mode.
+
+The historical closed cases gave a useful warning about model-score dependence: the 900 cleared cases had a mean upstream score of 0.881, while 4,665 confirmed fraud cases averaged 0.475. `New` identity status also appeared in 83.2% of cleared cases. This is a selected closed-case sample, so those rates are not probabilities for a new transaction. They justify giving the score and New flag little weight unless graph evidence or customer testimony corroborates them.
 
 The committed answers are **offline results**, marked `source: external` with `written_to_graph: false`. The GSQL schema, importer, live query adapter, and case writeback path are implemented, but they still need a TigerGraph endpoint to compile and verify. The current-case labels are hidden, so I cannot claim pattern accuracy or statistical calibration. With more time and live outcomes, I would test calibration, compare false-positive cost by action, and evaluate whether community detection or risk propagation adds value beyond the bounded motifs.
 

@@ -68,8 +68,9 @@ def main() -> None:
             if graph:
                 result = graph.upsert(payload)
                 stats = result.get("results", [{}])[0]
-                if stats.get("accepted_vertices", 0) == 0 and payload.vertices:
-                    raise RuntimeError(f"No vertices accepted in {phase} batch: {stats}")
+                if (stats.get("accepted_vertices", 0) < payload.vertex_count() or
+                        stats.get("accepted_edges", 0) < payload.edge_count()):
+                    raise RuntimeError(f"Incomplete {phase} batch: {stats}")
             total += len(rows)
             if total % 10000 < args.batch_size:
                 print(f"{phase}: {total} source rows")

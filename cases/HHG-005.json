@@ -3,14 +3,16 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.486,
-    "pattern": "card_not_present_new_device",
+    "fraud_probability": 0.343,
+    "pattern": "none",
     "pattern_description": "",
-    "affected_txn_ids": [],
-    "first_suspicious_txn_id": "",
+    "affected_txn_ids": [
+      "3523199"
+    ],
+    "first_suspicious_txn_id": "3523199",
     "connected_card_ids": [],
     "connected_device_profiles": [],
-    "exposure_usd": 0.0,
+    "exposure_usd": 100.07,
     "evidence": [
       {
         "claim": "Transaction 3523199 for customer C02923 was $100.07 via online at 2016-12-07 21:38:37; upstream model score 0.54.",
@@ -57,7 +59,7 @@
     "similar_prior_cases": [
       "CC-2857"
     ],
-    "summary": "Transaction 3523199 has card not present new device indicators, but the available evidence supports only a 49% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3523199 has none indicators, but the available evidence supports only a 34% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -111,5 +113,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 5,
   "tokens": 0,
-  "latency_s": 0.0913
+  "latency_s": 0.103
 }

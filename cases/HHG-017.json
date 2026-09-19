@@ -3,16 +3,18 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.492,
-    "pattern": "card_not_present_fraud",
+    "fraud_probability": 0.416,
+    "pattern": "none",
     "pattern_description": "",
-    "affected_txn_ids": [],
-    "first_suspicious_txn_id": "",
+    "affected_txn_ids": [
+      "3450629"
+    ],
+    "first_suspicious_txn_id": "3450629",
     "connected_card_ids": [],
     "connected_device_profiles": [
       "Windows | Windows 10 | chrome 65.0 | 1920x1080"
     ],
-    "exposure_usd": 0.0,
+    "exposure_usd": 100.09,
     "evidence": [
       {
         "claim": "Transaction 3450629 for customer C04570 was $100.09 via online at 2016-11-11 23:46:24; upstream model score 0.57.",
@@ -85,7 +87,7 @@
     "similar_prior_cases": [
       "CC-1383"
     ],
-    "summary": "Transaction 3450629 has card not present fraud indicators, but the available evidence supports only a 49% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3450629 has none indicators, but the available evidence supports only a 42% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -139,5 +141,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.136
+  "latency_s": 0.2326
 }

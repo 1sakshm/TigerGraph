@@ -2,8 +2,8 @@
   "case_id": "HHG-014",
   "case": {
     "status": "escalated",
-    "verdict": "uncertain",
-    "fraud_probability": 0.827,
+    "verdict": "fraud",
+    "fraud_probability": 0.954,
     "pattern": "undocumented",
     "pattern_description": "Several customer groups made similar online purchases from one detailed device profile in a short window. This cross-customer amount and device motif is visible through profile-neighbor and transaction-window queries.",
     "affected_txn_ids": [
@@ -114,39 +114,20 @@
           "C11670-K2",
           "C12796-K1"
         ]
-      },
-      {
-        "claim": "No customer reply was assumed after 24 hours for this benchmark scenario; this is not observed customer testimony.",
-        "source": "external",
-        "ref": "evidence_request:1:simulated_nonresponse",
-        "entity_ids": [
-          "3478561"
-        ]
       }
     ],
     "similar_prior_cases": [],
-    "summary": "Transaction 3478561 has undocumented indicators, but the available evidence supports only a 83% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3478561 shows undocumented with 1 transaction(s) in the bounded episode. The corroborated cross-customer motif supports a 95% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
-  "evidence_requests": [
-    {
-      "type": "customer_validation",
-      "asked_after_step": 4,
-      "assumed_response": "No customer reply received within 24 hours; this is a simulated benchmark assumption."
-    }
-  ],
+  "evidence_requests": [],
   "next_best_actions": {
     "initial": [
       {
         "action": "CREATE_CASE",
         "route": "auto",
         "reason": "R2/R6/R9 or section 3a: record the investigation."
-      },
-      {
-        "action": "VERIFY_WITH_CUSTOMER",
-        "route": "auto",
-        "reason": "R1: graph signals remain inconclusive; ask the cardholder."
       },
       {
         "action": "MONITOR_CONNECTED_CARDS",
@@ -184,19 +165,9 @@
         "action": "ESCALATE_TO_ANALYST",
         "route": "auto",
         "reason": "R9: analyst should review undocumented coordination."
-      },
-      {
-        "action": "MONITOR_CARD",
-        "route": "auto",
-        "reason": "R4: no customer reply within the simulated 24-hour window."
-      },
-      {
-        "action": "DECLINE_TRANSACTION",
-        "route": "L1",
-        "reason": "R4: decline pending authorizations; L1 approval required."
       }
     ],
-    "what_changed": "A simulated 24-hour nonresponse leaves identity uncertain; R4 replaces verification with monitoring and a pending-authorization decline proposal."
+    "what_changed": "nothing"
   },
   "sar": {
     "file": true,
@@ -217,8 +188,8 @@
       "2016-11-22"
     ]
   },
-  "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
+  "stop_reason": "Strong independent evidence supports the current proposal; human approval gates high-impact actions.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.1034
+  "latency_s": 0.1022
 }

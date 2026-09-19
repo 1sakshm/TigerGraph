@@ -10,6 +10,7 @@ CREATE VERTEX Transaction (PRIMARY_ID id STRING, customer_id STRING, ts STRING,
   card2 STRING, card3 STRING, card4 STRING, card5 STRING, card6 STRING,
   billing_region STRING, billing_country STRING, purchaser_email STRING,
   recipient_email STRING, identity_status STRING, proxy_status STRING,
+  match_status STRING, device_type STRING,
   device_profile_id STRING) WITH primary_id_as_attribute="true"
 CREATE VERTEX DeviceProfile (PRIMARY_ID id STRING, label STRING, device_info STRING,
   os STRING, browser STRING, screen STRING, specificity INT) WITH primary_id_as_attribute="true"

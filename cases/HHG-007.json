@@ -3,7 +3,7 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.581,
+    "fraud_probability": 0.17,
     "pattern": "none",
     "pattern_description": "",
     "affected_txn_ids": [],
@@ -30,17 +30,6 @@
         ]
       },
       {
-        "claim": "At least 4 same-customer, same-product, similar-amount transactions occurred within six hours of 3514948; the source does not identify which physical card made each one.",
-        "source": "external",
-        "ref": "index:customer_window_6h",
-        "entity_ids": [
-          "3514948",
-          "3515193",
-          "3515001",
-          "3514278"
-        ]
-      },
-      {
         "claim": "Closed case memory for this customer group contains CC-5521 (confirmed_fraud, account_takeover); these outcomes are context, not a verdict on the current transaction.",
         "source": "external",
         "ref": "index:prior_customer_cases",
@@ -60,7 +49,7 @@
     "similar_prior_cases": [
       "CC-5521"
     ],
-    "summary": "Transaction 3514948 has none indicators, but the available evidence supports only a 58% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3514948 has none indicators, but the available evidence supports only a 17% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -114,5 +103,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 4,
   "tokens": 0,
-  "latency_s": 0.0611
+  "latency_s": 0.0855
 }

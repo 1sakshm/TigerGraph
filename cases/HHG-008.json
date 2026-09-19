@@ -2,8 +2,8 @@
   "case_id": "HHG-008",
   "case": {
     "status": "open",
-    "verdict": "uncertain",
-    "fraud_probability": 0.761,
+    "verdict": "fraud",
+    "fraud_probability": 0.85,
     "pattern": "card_not_present_fraud",
     "pattern_description": "",
     "affected_txn_ids": [
@@ -66,7 +66,7 @@
       "CC-5010",
       "CC-4819"
     ],
-    "summary": "Transaction 3558054 has card not present fraud indicators, but the available evidence supports only a 76% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3558054 shows card not present fraud with 3 transaction(s) in the bounded episode. The customer report and transaction sequence supports a 85% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -106,8 +106,8 @@
     "total_amount_usd": 0.0,
     "activity_dates": []
   },
-  "stop_reason": "Further available graph expansion has low value; the case awaits customer or analyst clarification.",
+  "stop_reason": "Strong independent evidence supports the current proposal; human approval gates high-impact actions.",
   "tool_calls": 4,
   "tokens": 0,
-  "latency_s": 0.0636
+  "latency_s": 0.0705
 }

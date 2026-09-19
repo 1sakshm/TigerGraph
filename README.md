@@ -67,7 +67,7 @@ $env:TIGERGRAPH_GRAPH="HHGOA"
 .venv\Scripts\python -m scripts.evaluate_hhgoa
 ```
 
-The dry run has been exercised across all 590,742 + 144,432 + 5,565 + 20 source rows. The live commands still require a real endpoint. The importer is idempotent and supports `--phase` and `--limit` for bounded smoke tests. The live runner writes the 20 local answer files only after all graph retrievals and case writebacks succeed. It sets `written_to_graph=true` only after TigerGraph reports accepted case/evidence vertices. Installed queries are allowlisted; no user-supplied GSQL is executed.
+The dry run has been exercised across all 590,742 + 144,432 + 5,565 + 20 source rows. The live commands still require a real endpoint. The importer is idempotent and supports `--phase` and `--limit` for bounded smoke tests. The live runner writes the 20 local answer files only after all graph retrievals and case writebacks succeed. It stages a case with `written_to_graph=false`, verifies accepted case/evidence vertices and every case edge, then marks the stored answer graph-backed. Each upsert is atomic, but the three requests are not one transaction; a failed case can leave a retryable staged record. Installed queries are allowlisted; no user-supplied GSQL is executed.
 
 ## Run the analyst interface
 
@@ -86,7 +86,7 @@ The HHGOA action names and L1/L2 routes follow policy R1–R10 from the supplied
 
 ## What is verified and what remains
 
-- 20/20 answer files pass contract, cited-ID, approval-route, and report consistency checks. The current audit finds 101 evidence items, 11 changed next-action lists, and three L2 SAR draft recommendations.
+- 20/20 answer files pass contract, cited-ID, approval-route, and report consistency checks. The current audit finds 99 evidence items, 10 changed next-action lists, and three L2 SAR draft recommendations.
 - The UI and API are running locally; the benchmark view was captured from a headless browser. The synthetic approval flow has API tests.
 - The full import payload builder ran in dry-run mode over all supplied rows. GSQL compilation, live query responses, import acceptance, and graph case writeback need a TigerGraph connection. The current answer files make no contrary claim.
 - The probabilities and confidence values are transparent heuristics, not statistically calibrated. Current-case outcome labels are withheld, so local pattern accuracy and calibration cannot be honestly measured.

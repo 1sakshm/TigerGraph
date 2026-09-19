@@ -105,8 +105,11 @@ class BenchmarkInvestigator:
         nearby = [row for row in window if row["id"] != seed["id"] and
                   row["product"] == seed["product"] and row["channel"] == seed["channel"] and
                   _seconds_between(row["ts"], seed["ts"]) <= 6 * 3600]
+        # High-volume customer groups naturally contain more similarly priced
+        # purchases. Require near-identical amounts before calling one a burst.
+        amount_tolerance = 0.03 if stats["count"] >= 100 else 0.16
         amount_peers = [row for row in nearby if seed["amount"] > 0 and
-                        abs(row["amount"] - seed["amount"]) / seed["amount"] <= 0.16]
+                        abs(row["amount"] - seed["amount"]) / seed["amount"] <= amount_tolerance]
         if len(amount_peers) >= 2:
             ids = [seed["id"], *[row["id"] for row in amount_peers[:5]]]
             evidence.append(EvidenceItem(
@@ -191,19 +194,22 @@ class BenchmarkInvestigator:
                 source=self.data.source, ref=self._ref("prior_customer_cases"), entity_ids=[p["case_id"] for p in used_prior],
             ))
 
-        # This score is an inspectable investigation heuristic, not a calibrated model.
-        probability = 0.10 + 0.53 * (seed["risk"] or 0)
-        probability += 0.32 if report else 0
-        probability += 0.10 if seed["identity_status"] == "New" else 0
-        probability += 0.14 if len(amount_peers) >= 2 else 0
-        probability += 0.18 if region_novel else 0
-        probability += 0.35 if coordinated else 0
+        # Historical cleared alerts are concentrated at high model scores and
+        # often have New identity status. Those are weak triggers, not verdicts.
+        # The closed-case sample is selected, so its rates are not calibrated priors.
+        probability = 0.30 + 0.08 * ((seed["risk"] or 0) - 0.5)
+        probability += 0.40 if report else 0
+        probability += 0.04 if seed["identity_status"] == "New" else 0
+        probability += 0.16 if len(amount_peers) >= 2 else 0
+        probability += 0.20 if region_novel else 0
+        probability += 0.40 if coordinated else 0
+        probability += 0.15 if corroborated_amount else 0
         probability += 0.25 if analyst_cluster else 0
-        probability += 0.19 if testing else 0
+        probability += 0.22 if testing else 0
         if stats["count"] >= 20 and seed["addr1"] and stats["region_count"] >= 10:
-            probability -= 0.12
+            probability -= 0.16
         if stats["median_amount"] and seed["amount"] > 4 * stats["median_amount"]:
-            probability += 0.09
+            probability += 0.03
         if cleared_prior and not relevant_prior:
             probability -= 0.05
         probability = round(max(0.06, min(0.96, probability)), 3)
@@ -217,9 +223,9 @@ class BenchmarkInvestigator:
             pattern, description = "card_testing", ""
         elif region_novel:
             pattern, description = "out_of_region_use", ""
-        elif seed["channel"] == "online" and seed["identity_status"] == "New":
+        elif seed["channel"] == "online" and seed["identity_status"] == "New" and probability >= 0.50:
             pattern, description = "card_not_present_new_device", ""
-        elif seed["channel"] == "online" and (len(amount_peers) >= 2 or probability >= 0.67):
+        elif seed["channel"] == "online" and probability >= 0.60 and len(amount_peers) >= 2:
             pattern, description = "card_not_present_fraud", ""
         else:
             pattern, description = "none", ""
@@ -234,12 +240,12 @@ class BenchmarkInvestigator:
         verdict = "fraud" if probability >= 0.85 and (report or coordinated or testing or region_novel) else "uncertain"
         if probability <= 0.15 and len(evidence) >= 2:
             verdict = "legitimate"
-        suspected_episode = verdict == "fraud" or report or coordinated or probability >= 0.60
+        suspected_episode = verdict == "fraud" or report or coordinated or probability >= 0.30
         affected = [row["id"] for row in episode] if suspected_episode and verdict != "legitimate" else []
         exposure = round(sum(abs(row["amount"]) for row in episode), 2) if affected else 0.0
 
         initial: list[Action] = []
-        if report or probability >= 0.30 or coordinated:
+        if report or coordinated or probability >= 0.30 or trigger["trigger_type"] in {"risk_score", "analyst_request"}:
             initial.append(make_action("CREATE_CASE", exposure, "R2/R6/R9 or section 3a: record the investigation."))
         if testing:
             initial.extend([
@@ -292,12 +298,12 @@ class BenchmarkInvestigator:
         validate_actions(final, exposure)
         file_report = any(a.action == "FILE_REPORT" for a in final)
         sar = self._sar(file_report, trigger, seed, episode, exposure, peer_customers, pattern, report)
-        if verdict == "fraud":
+        if any(a.action == "ESCALATE_TO_ANALYST" for a in final):
+            status = "escalated"
+        elif verdict == "fraud":
             status = "closed_fraud" if not any(a.route != "auto" for a in final) else "open"
         elif verdict == "legitimate":
             status = "closed_legitimate"
-        elif any(a.action == "ESCALATE_TO_ANALYST" for a in final):
-            status = "escalated"
         else:
             status = "open"
         if verdict == "fraud":

@@ -50,6 +50,19 @@ def evaluate(case_dir: Path, index: Path) -> tuple[str, list[str]]:
     reports = sum(answer.sar.file for answer in answers)
     writes = sum(answer.case.written_to_graph for answer in answers)
     evidence = sum(len(answer.case.evidence) for answer in answers)
+    historical = data._rows(
+        """WITH seeds AS (
+             SELECT outcome,
+               CASE WHEN first_fraud_txn_id IS NOT NULL AND first_fraud_txn_id<>''
+                    THEN first_fraud_txn_id ELSE split_part(txn_ids,'|',1) END AS id
+             FROM history)
+           SELECT h.outcome, count(*) AS cases,
+                  round(avg(t.risk),3) AS mean_model_score,
+                  round(avg(CASE WHEN i.identity_status='New' THEN 1 ELSE 0 END),3)
+                    AS new_identity_fraction
+           FROM seeds h JOIN tx t USING(id) LEFT JOIN identity i USING(id)
+           GROUP BY h.outcome ORDER BY h.outcome"""
+    )
     lines = [
         "# Benchmark results",
         "",
@@ -65,6 +78,17 @@ def evaluate(case_dir: Path, index: Path) -> tuple[str, list[str]]:
         f"- Verified TigerGraph case writes: **{writes}**",
         f"- Average recorded retrieval calls: **{mean(a.tool_calls for a in answers):.1f}**" if answers else "- Average recorded retrieval calls: n/a",
         f"- Average recorded latency: **{mean(a.latency_s for a in answers):.3f}s**" if answers else "- Average recorded latency: n/a",
+        "",
+        "## Historical closed-case diagnostic",
+        "",
+        "These are selected closed cases, not a representative transaction sample. The table "
+        "explains why the engine gives the upstream score and `New` identity flag little weight; "
+        "it is not used as a direct probability lookup or a hidden benchmark label.",
+        "",
+        "| Closed outcome | Cases | Mean upstream score | New identity fraction |",
+        "| --- | ---: | ---: | ---: |",
+        *[f"| {row['outcome']} | {row['cases']} | {row['mean_model_score']:.3f} | "
+          f"{row['new_identity_fraction']:.3f} |" for row in historical],
         "",
         "## Verdicts",
         "",

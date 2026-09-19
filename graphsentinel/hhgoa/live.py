@@ -48,6 +48,7 @@ class TigerGraphDatasetQueries(DatasetQueries):
             "addr1": row.get("billing_region"), "addr2": row.get("billing_country"),
             "email": row.get("purchaser_email"), "recipient_email": row.get("recipient_email"),
             "identity_status": row.get("identity_status"), "proxy_status": row.get("proxy_status"),
+            "match_status": row.get("match_status"), "device_type": row.get("device_type"),
             "device_profile_id": row.get("device_profile_id"),
             "device_info": None, "os": None, "browser": None, "screen": None,
         }

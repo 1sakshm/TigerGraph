@@ -6,7 +6,7 @@ The supplied benchmark has no direct fraud labels, merchant IDs, or per-transact
 
 The current benchmark run is offline while TigerGraph connection details are pending; graph writeback is explicitly marked unverified in the files. The live TigerGraph import and query path is ready for integration testing.
 
-Repository: [add GitHub link]
+Repository: https://github.com/1sakshm/TigerGraph
 Demo video: [add video link after recording]
 
 #TigerGraph #FraudDetection #GraphAI #HackerHouseGoa

@@ -4,49 +4,58 @@ This report checks answer format, provenance, cited IDs, approval routes, and ca
 
 - Cases: **20/20**
 - Contract or evidence validation failures: **0**
-- Evidence items: **101**
-- Cases with changed next-best-action lists: **11**
+- Evidence items: **99**
+- Cases with changed next-best-action lists: **10**
 - SAR drafts recommended for L2 approval: **3**
 - Verified TigerGraph case writes: **0**
 - Average recorded retrieval calls: **5.0**
-- Average recorded latency: **0.095s**
+- Average recorded latency: **0.099s**
+
+## Historical closed-case diagnostic
+
+These are selected closed cases, not a representative transaction sample. The table explains why the engine gives the upstream score and `New` identity flag little weight; it is not used as a direct probability lookup or a hidden benchmark label.
+
+| Closed outcome | Cases | Mean upstream score | New identity fraction |
+| --- | ---: | ---: | ---: |
+| cleared | 900 | 0.881 | 0.832 |
+| confirmed_fraud | 4665 | 0.475 | 0.181 |
 
 ## Verdicts
 
-- fraud: 2
-- uncertain: 18
+- fraud: 6
+- uncertain: 14
 
 ## Patterns
 
-- card_not_present_fraud: 2
-- card_not_present_new_device: 9
-- none: 7
+- card_not_present_fraud: 1
+- card_not_present_new_device: 4
+- none: 13
 - undocumented: 2
 
 ## Case matrix
 
 | Case | Verdict | Probability | Pattern | Initial actions | Final actions | Graph write |
 | --- | --- | ---: | --- | --- | --- | --- |
-| HHG-001 | uncertain | 0.423 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-002 | uncertain | 0.609 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-003 | uncertain | 0.512 | none | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-004 | uncertain | 0.790 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-005 | uncertain | 0.486 | card_not_present_new_device | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-006 | fraud | 0.882 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD, FILE_REPORT | CREATE_CASE, BLOCK_CARD, FILE_REPORT | no |
-| HHG-007 | uncertain | 0.581 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-008 | uncertain | 0.761 | card_not_present_fraud | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-009 | uncertain | 0.568 | none | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-010 | uncertain | 0.717 | card_not_present_new_device | CREATE_CASE, VERIFY_WITH_CUSTOMER, ESCALATE_TO_ANALYST | CREATE_CASE, ESCALATE_TO_ANALYST, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-011 | uncertain | 0.817 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-012 | uncertain | 0.392 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-013 | uncertain | 0.603 | card_not_present_new_device | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-014 | uncertain | 0.827 | undocumented | CREATE_CASE, VERIFY_WITH_CUSTOMER, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-015 | uncertain | 0.608 | card_not_present_new_device | CREATE_CASE, VERIFY_WITH_CUSTOMER, ESCALATE_TO_ANALYST | CREATE_CASE, ESCALATE_TO_ANALYST, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-016 | uncertain | 0.716 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-017 | uncertain | 0.492 | card_not_present_fraud | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
-| HHG-018 | uncertain | 0.554 | none | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
-| HHG-019 | fraud | 0.960 | undocumented | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | no |
-| HHG-020 | uncertain | 0.356 | card_not_present_new_device | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-001 | uncertain | 0.309 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-002 | uncertain | 0.353 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-003 | uncertain | 0.532 | none | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-004 | uncertain | 0.757 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-005 | uncertain | 0.343 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-006 | fraud | 0.910 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD, FILE_REPORT | CREATE_CASE, BLOCK_CARD, FILE_REPORT | no |
+| HHG-007 | uncertain | 0.170 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-008 | fraud | 0.850 | card_not_present_fraud | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-009 | uncertain | 0.682 | none | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-010 | uncertain | 0.352 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER, ESCALATE_TO_ANALYST | CREATE_CASE, ESCALATE_TO_ANALYST, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-011 | fraud | 0.911 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-012 | uncertain | 0.304 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-013 | uncertain | 0.361 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-014 | fraud | 0.954 | undocumented | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | no |
+| HHG-015 | uncertain | 0.362 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER, ESCALATE_TO_ANALYST | CREATE_CASE, ESCALATE_TO_ANALYST, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-016 | fraud | 0.880 | card_not_present_new_device | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-017 | uncertain | 0.416 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
+| HHG-018 | uncertain | 0.538 | none | CREATE_CASE, BLOCK_CARD | CREATE_CASE, BLOCK_CARD | no |
+| HHG-019 | fraud | 0.922 | undocumented | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | CREATE_CASE, MONITOR_CONNECTED_CARDS, FILE_REPORT, ESCALATE_TO_ANALYST | no |
+| HHG-020 | uncertain | 0.182 | none | CREATE_CASE, VERIFY_WITH_CUSTOMER | CREATE_CASE, MONITOR_CARD, DECLINE_TRANSACTION | no |
 
 ## Known measurement limits
 

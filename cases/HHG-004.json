@@ -3,7 +3,7 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.79,
+    "fraud_probability": 0.757,
     "pattern": "card_not_present_new_device",
     "pattern_description": "",
     "affected_txn_ids": [
@@ -62,7 +62,7 @@
       "CC-3778",
       "CC-0696"
     ],
-    "summary": "Transaction 3583227 has card not present new device indicators, but the available evidence supports only a 79% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3583227 has card not present new device indicators, but the available evidence supports only a 76% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -105,5 +105,5 @@
   "stop_reason": "Further available graph expansion has low value; the case awaits customer or analyst clarification.",
   "tool_calls": 4,
   "tokens": 0,
-  "latency_s": 0.0418
+  "latency_s": 0.0603
 }

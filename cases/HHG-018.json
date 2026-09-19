@@ -3,7 +3,7 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.554,
+    "fraud_probability": 0.538,
     "pattern": "none",
     "pattern_description": "",
     "affected_txn_ids": [
@@ -52,7 +52,7 @@
     "similar_prior_cases": [
       "CC-5558"
     ],
-    "summary": "Transaction 3491361 has none indicators, but the available evidence supports only a 55% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3491361 has none indicators, but the available evidence supports only a 54% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -95,5 +95,5 @@
   "stop_reason": "Further available graph expansion has low value; the case awaits customer or analyst clarification.",
   "tool_calls": 4,
   "tokens": 0,
-  "latency_s": 0.0501
+  "latency_s": 0.0918
 }

@@ -35,7 +35,8 @@ def main() -> None:
         CREATE OR REPLACE TABLE identity AS
         SELECT TransactionID AS id, id_15 AS identity_status,
                id_23 AS proxy_status, id_30 AS os, id_31 AS browser,
-               id_33 AS screen, DeviceInfo AS device_info
+               id_33 AS screen, id_34 AS match_status,
+               DeviceType AS device_type, DeviceInfo AS device_info
         FROM read_csv(?, all_varchar=true, auto_detect=true)
         """,
         [str(DATA / "identity.csv")],

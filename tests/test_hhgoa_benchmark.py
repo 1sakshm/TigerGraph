@@ -34,3 +34,8 @@ def test_all_20_real_cases_are_evidence_cited_and_policy_valid():
             assert not answer.sar.file
         for evidence in answer.case.evidence:
             assert all(data.entity_exists(identifier) for identifier in evidence.entity_ids)
+    by_id = {answer.case_id: answer for answer in answers}
+    assert by_id["HHG-007"].case.fraud_probability < 0.5
+    assert all(a.action != "BLOCK_CARD" for a in by_id["HHG-007"].next_best_actions.final)
+    assert by_id["HHG-014"].case.pattern == "undocumented"
+    assert by_id["HHG-014"].case.fraud_probability > 0.8

@@ -1,4 +1,9 @@
-from graphsentinel.hhgoa.tigergraph import GraphPayload, device_profile_id
+from pathlib import Path
+
+import pytest
+
+from graphsentinel.hhgoa.contracts import Answer
+from graphsentinel.hhgoa.tigergraph import GraphPayload, HHGOATigerGraph, device_profile_id
 
 
 def test_transaction_payload_uses_only_observed_relationships():
@@ -30,3 +35,42 @@ def test_identity_profile_is_stable_and_case_anchor_is_explicit():
     payload.add_anchor({"case_id": "HHG-001", "customer_id": "C12382",
                         "card_id": "C12382-K1", "flagged_txn_id": "3514030"})
     assert "CARD_TX" in payload.body()["edges"]["Card"]["C12382-K1"]
+
+
+def test_case_writeback_requires_all_evidence_edges(monkeypatch):
+    path = Path(__file__).resolve().parents[1] / "cases/HHG-019.json"
+    answer = Answer.model_validate_json(path.read_text(encoding="utf-8"))
+    trigger = {"customer_id": "C07987", "card_id": "C07987-K2",
+               "flagged_txn_id": "3503878"}
+    graph = HHGOATigerGraph("http://localhost:9000", "token")
+    calls = []
+
+    def missing_edge(payload, require_existing=False):
+        calls.append((payload.body(), require_existing))
+        return {"results": [{"accepted_vertices": payload.vertex_count(),
+                             "accepted_edges": max(0, payload.edge_count() - 1)}]}
+
+    monkeypatch.setattr(graph, "upsert", missing_edge)
+    with pytest.raises(RuntimeError, match="incomplete"):
+        graph.write_answer(answer, trigger)
+    assert len(calls) == 2
+    assert calls[0][1] is False
+    assert calls[0][0]["edges"] == {}
+    assert '"written_to_graph":false' in calls[0][0]["vertices"]["InvestigationCase"]["HHG-019"]["answer_json"]["value"]
+    assert calls[1][1] is True
+    assert calls[1][0]["vertices"] == {}
+
+    calls.clear()
+
+    def accepted(payload, require_existing=False):
+        calls.append((payload.body(), require_existing))
+        return {"results": [{"accepted_vertices": payload.vertex_count(),
+                             "accepted_edges": payload.edge_count()}]}
+
+    monkeypatch.setattr(graph, "upsert", accepted)
+    written = graph.write_answer(answer, trigger)
+    assert len(calls) == 3
+    assert calls[2][0]["edges"] == {}
+    assert '"written_to_graph":true' in calls[2][0]["vertices"]["InvestigationCase"]["HHG-019"]["answer_json"]["value"]
+    assert written.case.written_to_graph is True
+    assert written.case.graph_case_id == "HHG-019"

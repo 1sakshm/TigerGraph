@@ -37,7 +37,7 @@ class DatasetQueries:
     def transaction(self, transaction_id: str) -> dict:
         rows = self._rows(
             """SELECT t.*, i.identity_status, i.proxy_status, i.os, i.browser,
-                      i.screen, i.device_info
+                      i.screen, i.match_status, i.device_type, i.device_info
                FROM tx t LEFT JOIN identity i ON t.id=i.id WHERE t.id=?""",
             [transaction_id],
         )
@@ -60,7 +60,7 @@ class DatasetQueries:
                         limit: int = 200) -> list[dict]:
         return self._rows(
             """SELECT t.*, i.identity_status, i.proxy_status, i.os, i.browser,
-                      i.screen, i.device_info
+                      i.screen, i.match_status, i.device_type, i.device_info
                FROM tx t LEFT JOIN identity i ON t.id=i.id
                WHERE t.customer_id=? AND t.ts<=?
                  AND cast(t.ts AS timestamp)>=cast(? AS timestamp)-(? * interval '1 hour')
@@ -76,7 +76,8 @@ class DatasetQueries:
         return self._rows(
             """SELECT t.id, t.customer_id, t.ts, t.amount, t.product, t.risk,
                       t.email, t.recipient_email, t.channel, i.identity_status,
-                      i.proxy_status, i.device_info, i.os, i.browser, i.screen
+                      i.proxy_status, i.match_status, i.device_type,
+                      i.device_info, i.os, i.browser, i.screen
                FROM identity i JOIN tx t ON t.id=i.id
                WHERE i.device_info IS NOT DISTINCT FROM ?
                  AND i.os IS NOT DISTINCT FROM ?

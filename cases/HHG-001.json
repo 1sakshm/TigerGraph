@@ -3,14 +3,16 @@
   "case": {
     "status": "open",
     "verdict": "uncertain",
-    "fraud_probability": 0.423,
+    "fraud_probability": 0.309,
     "pattern": "none",
     "pattern_description": "",
-    "affected_txn_ids": [],
-    "first_suspicious_txn_id": "",
+    "affected_txn_ids": [
+      "3514030"
+    ],
+    "first_suspicious_txn_id": "3514030",
     "connected_card_ids": [],
     "connected_device_profiles": [],
-    "exposure_usd": 0.0,
+    "exposure_usd": 77.07,
     "evidence": [
       {
         "claim": "Transaction 3514030 for customer C12382 was $77.07 via in_person at 2016-12-04 19:55:28; upstream model score 0.61.",
@@ -49,7 +51,7 @@
     "similar_prior_cases": [
       "CC-3587"
     ],
-    "summary": "Transaction 3514030 has none indicators, but the available evidence supports only a 42% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
+    "summary": "Transaction 3514030 has none indicators, but the available evidence supports only a 31% heuristic fraud assessment. The cardholder's response and exact card-to-transaction mapping remain unresolved.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -103,5 +105,5 @@
   "stop_reason": "R4's simulated nonresponse is recorded; a real customer answer or analyst decision is required.",
   "tool_calls": 4,
   "tokens": 0,
-  "latency_s": 0.0636
+  "latency_s": 0.0957
 }

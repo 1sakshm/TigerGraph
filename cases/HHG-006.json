@@ -3,7 +3,7 @@
   "case": {
     "status": "open",
     "verdict": "fraud",
-    "fraud_probability": 0.882,
+    "fraud_probability": 0.91,
     "pattern": "card_not_present_new_device",
     "pattern_description": "",
     "affected_txn_ids": [
@@ -90,7 +90,7 @@
       }
     ],
     "similar_prior_cases": [],
-    "summary": "Transaction 3476682 shows card not present new device with 4 transaction(s) in the bounded episode. The customer report and transaction sequence supports a 88% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
+    "summary": "Transaction 3476682 shows card not present new device with 4 transaction(s) in the bounded episode. The customer report and transaction sequence supports a 91% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -149,5 +149,5 @@
   "stop_reason": "Strong independent evidence supports the current proposal; human approval gates high-impact actions.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.1278
+  "latency_s": 0.127
 }

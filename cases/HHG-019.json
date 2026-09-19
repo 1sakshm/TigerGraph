@@ -1,9 +1,9 @@
 {
   "case_id": "HHG-019",
   "case": {
-    "status": "open",
+    "status": "escalated",
     "verdict": "fraud",
-    "fraud_probability": 0.96,
+    "fraud_probability": 0.922,
     "pattern": "undocumented",
     "pattern_description": "Several customer groups made similar online purchases from one detailed device profile in a short window. This cross-customer amount and device motif is visible through profile-neighbor and transaction-window queries.",
     "affected_txn_ids": [
@@ -91,7 +91,7 @@
       "CC-5026",
       "CC-2087"
     ],
-    "summary": "Transaction 3503878 shows undocumented with 3 transaction(s) in the bounded episode. The corroborated cross-customer motif supports a 96% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
+    "summary": "Transaction 3503878 shows undocumented with 3 transaction(s) in the bounded episode. The corroborated cross-customer motif supports a 92% heuristic fraud assessment. Any block or filing remains a human approval proposal.",
     "written_to_graph": false,
     "graph_case_id": ""
   },
@@ -162,5 +162,5 @@
   "stop_reason": "Strong independent evidence supports the current proposal; human approval gates high-impact actions.",
   "tool_calls": 6,
   "tokens": 0,
-  "latency_s": 0.0898
+  "latency_s": 0.0774
 }

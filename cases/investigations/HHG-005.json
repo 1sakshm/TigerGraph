@@ -27,6 +27,6 @@
     "step": 5,
     "tool": "uncertainty_assessment",
     "seed": "3523199",
-    "result": "risk_probability=0.486; evidence_confidence=0.480; both are uncalibrated heuristics"
+    "result": "risk_probability=0.343; evidence_confidence=0.480; both are uncalibrated heuristics"
   }
 ]
