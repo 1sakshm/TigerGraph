@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="How GraphSentinel investigates uncertain fraud signals with graph evidence, case memory, explicit uncertainty, and policy-routed actions.">
+  <title>Building GraphSentinel — Technical Blog</title>
+  <link rel="stylesheet" href="../static/style.css">
+  <link rel="stylesheet" href="../static/blog.css">
+</head>
+<body class="blog-page">
+  <header class="topbar blog-topbar">
+    <a class="brand" href="../"><span class="brand-mark">◇</span><span><strong>GraphSentinel</strong><small>HHGOA 2026 · TECHNICAL BLOG</small></span></a>
+    <nav class="blog-nav" aria-label="Article links">
+      <a href="../">20-case benchmark</a>
+      <a href="https://graphsentinel-hhgoa-demo.onrender.com">Live UI</a>
+      <a href="https://github.com/1sakshm/TigerGraph">Source</a>
+    </nav>
+  </header>
+
+  <main class="article-shell">
+    <article>
+      <header class="article-hero">
+        <span class="eyebrow">TIGERGRAPH AGENTIC FRAUD INVESTIGATION · HHGOA 2026</span>
+        <h1>Building GraphSentinel: from a fraud alert to an investigation</h1>
+        <p class="dek">A graph-grounded investigation system that turns uncertain transaction signals into attributable evidence, explicit uncertainty, and a policy-routed next action.</p>
+        <div class="article-meta"><span>By Saksham Sharma</span><span>September 2026</span><span>12 minute read</span></div>
+        <div class="hero-links"><a class="primary-link" href="https://graphsentinel-hhgoa-demo.onrender.com">Open the investigator</a><a href="../">Inspect all 20 cases</a></div>
+      </header>
+
+      <section class="lead-card">
+        <strong>The model flags a transaction. GraphSentinel investigates the story around it.</strong>
+        <p>A model score can say “look here.” It cannot explain whether a customer changed devices, several customer groups share an origin, a disputed charge resembles previous behavior, or a block would harm an innocent cardholder.</p>
+      </section>
+
+      <section id="built">
+        <span class="section-number">01</span><h2>What I built</h2>
+        <p>GraphSentinel is an evidence-driven fraud investigation system for analysts. It accepts a risk signal, customer report, or analyst request; opens a case; explores a bounded relationship neighborhood; identifies graph motifs; retrieves relevant closed cases; separates risk from evidence confidence; and chooses a policy-valid next action.</p>
+        <p>The repository contains a working FastAPI service, two analyst views, 20 benchmark answer files, GSQL schema and queries, a restricted graph adapter, an MCP facade, deterministic policy controls, SQLite case progression for the synthetic workflow, SAR generation, benchmark auditing, and automated tests.</p>
+        <div class="result-grid"><div><strong>20/20</strong><span>benchmark cases</span></div><div><strong>99</strong><span>cited evidence items</span></div><div><strong>10</strong><span>changed action lists</span></div><div><strong>3</strong><span>L2 report drafts</span></div></div>
+      </section>
+
+      <section id="dataset">
+        <span class="section-number">02</span><h2>The dataset forced the design</h2>
+        <p>The supplied HHGOA IEEE data contains 590,742 transactions, 144,432 identity records, 5,565 closed cases, and 20 benchmark triggers. It deliberately omits a direct fraud label for the transactions under investigation.</p>
+        <p>It also contains no merchant identifier and no verified card identifier on every transaction. I therefore did not invent <code>Transaction → Merchant</code> edges or assign transactions to physical cards by guessing from issuer attributes. Customers connect to transactions through the supplied <code>customer_id</code>; card-to-transaction relationships exist only where the case pack or closed cases explicitly provide them.</p>
+        <aside class="callout"><strong>Design rule:</strong> when the data does not support an edge, the graph must preserve that uncertainty rather than manufacture a cleaner story.</aside>
+      </section>
+
+      <section id="architecture">
+        <span class="section-number">03</span><h2>Architecture</h2>
+        <div class="architecture-flow" aria-label="GraphSentinel architecture"><div>Trigger<small>score · report · analyst</small></div><b>→</b><div>Investigation<small>bounded state machine</small></div><b>→</b><div>GraphRAG<small>GSQL + case memory</small></div><b>→</b><div>Assessment<small>risk + confidence</small></div><b>→</b><div>Policy<small>auto · L1 · L2</small></div></div>
+        <p>The state machine makes investigation inspectable: initial retrieval, pattern analysis, case-memory search, uncertainty assessment, evidence request, reassessment, action selection, policy check, stopping decision, approval, and case update. Every tool call records its reason, parameters, result summary, state, and latency.</p>
+        <p>Graph traversal, thresholds, permissions, and persistence remain deterministic. An optional OpenAI Responses API component can synthesize a cited narrative, but it cannot change probabilities, policy routes, or actions. Unknown evidence citations cause a fallback to the deterministic summary.</p>
+      </section>
+
+      <section id="tigergraph">
+        <span class="section-number">04</span><h2>How TigerGraph is used</h2>
+        <p>The HHGOA graph model represents customers, cards, transactions, detailed device profiles, email domains, billing regions, closed cases, investigation cases, and evidence. Five allowlisted GSQL queries answer bounded investigation questions:</p>
+        <ul><li>retrieve a transaction and its customer and identity context;</li><li>inspect the customer’s bounded transaction window;</li><li>find other customers sharing a detailed device profile;</li><li>retrieve related closed cases and explicitly known cards;</li><li>retrieve transactions connected to historical cases.</li></ul>
+        <p>The GraphRAG layer does not dump raw rows into a language model. It converts retrieval results into evidence packages containing a claim, source, query reference, real entity identifiers, and strength. Historical outcomes are supporting context, never labels for the current transaction.</p>
+        <p>The repository includes the GSQL schema, queries, idempotent importer, graph retrieval adapter, MCP tools, and case writeback verification path. The committed benchmark run was produced with the reproducible offline data index and transparently records <code>written_to_graph: false</code>. Live GSQL compilation and writeback still require a connected TigerGraph endpoint.</p>
+      </section>
+
+      <section id="agentic">
+        <span class="section-number">05</span><h2>Agentic capabilities</h2>
+        <div class="capability-grid">
+          <div><h3>Evidence value</h3><p>The investigator chooses the missing evidence most likely to reduce uncertainty. In the interactive case, customer confirmation outranks deeper graph expansion.</p></div>
+          <div><h3>Adaptive action</h3><p>T100 begins with a request for confirmation at 71% confidence. A customer denial raises confidence to 95% and changes the proposal to <code>BLOCK_CARD</code>.</p></div>
+          <div><h3>Policy gates</h3><p>Rules R1–R10 map actions to automatic, L1, or L2 routes. A named analyst must approve customer-impacting actions.</p></div>
+          <div><h3>Stopping policy</h3><p>Investigation stops when evidence is sufficient, another query has low estimated value, or control must pass to a customer or analyst.</p></div>
+          <div><h3>Case memory</h3><p>Resolved cases retain evidence, actions, decisions, and outcomes so later investigations can retrieve related context without copying the verdict.</p></div>
+          <div><h3>Auditable explanations</h3><p>Every important claim maps to evidence and real identifiers. SAR drafts are generated from the structured record rather than invented prose.</p></div>
+        </div>
+      </section>
+
+      <section id="patterns">
+        <span class="section-number">06</span><h2>What the graph revealed</h2>
+        <p>The most useful motif was not “two rows have the same browser.” Shared browsers and device profiles can create false positives. GraphSentinel requires corroboration through amount, product, timing, identity, or email-domain context.</p>
+        <p>In HHG-019, three customer groups made closely matching near-$100 online purchases using the same detailed profile and email-domain combination in a short window. The system classifies this as an undocumented pattern rather than forcing it into a supplied typology. In HHG-017, broader profile overlap lacks equivalent corroboration, so the case stays uncertain.</p>
+        <p>The closed-case sample also challenged naive model-score dependence. The 900 cleared cases averaged a 0.881 upstream score, while 4,665 confirmed fraud cases averaged 0.475. New identity status appeared in 83.2% of cleared cases. Because this is a selected historical sample, those rates are diagnostic rather than calibrated probabilities—but they clearly argue against automatic blocking from a score or New flag alone.</p>
+      </section>
+
+      <section id="learned">
+        <span class="section-number">07</span><h2>What I learned</h2>
+        <p>Graph technology is valuable when the question concerns relationships, provenance, and bounded paths. It does not remove the need for careful semantics. A graph can make a weak relationship look visually persuasive, so the evidence contract must state what an edge proves and what it does not.</p>
+        <p>Risk and confidence must be separate. An event can have severe potential harm while the explanation remains weak. In that situation, a reversible verification step is often safer than an irreversible block.</p>
+        <p>Policy belongs in code rather than a prompt. The reasoning layer can propose and explain, but authorization must be deterministic and auditable. Finally, stopping is a real agent capability: more traversal is not automatically better once the next query is unlikely to change the decision.</p>
+      </section>
+
+      <section id="improve">
+        <span class="section-number">08</span><h2>What I would improve with more time</h2>
+        <ul><li>Compile and benchmark every GSQL query against a live Savanna workspace, then regenerate the 20 cases through graph retrieval and verified writeback.</li><li>Measure probability calibration and false-positive cost once current-case outcome labels become available.</li><li>Evaluate community detection and risk propagation against the bounded motifs instead of adding algorithms only for novelty.</li><li>Add a durable hosted case store and a production identity provider for the analyst approval flow.</li><li>Build a reproducible TigerGraph deployment manifest covering schema, loading jobs, installed queries, scoped tokens, and integration checks.</li></ul>
+      </section>
+
+      <footer class="article-footer"><h2>Inspect the evidence yourself</h2><p>The public benchmark contains every submitted case, evidence item, action route, SAR decision, and investigation trace.</p><div class="hero-links"><a class="primary-link" href="../">Open the benchmark</a><a href="https://github.com/1sakshm/TigerGraph">Read the source</a></div></footer>
+    </article>
+  </main>
+</body>
+</html>

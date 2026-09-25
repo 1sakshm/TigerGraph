@@ -30,3 +30,19 @@ def test_pages_preview_contains_all_cases_and_no_backend_actions(tmp_path):
         assert answer["case"]["written_to_graph"] is False
         assert answer["case_id"] == case_id
         assert isinstance(trace, list)
+
+
+def test_pages_preview_publishes_the_technical_blog(tmp_path):
+    build(ROOT, tmp_path)
+
+    benchmark = (tmp_path / "index.html").read_text(encoding="utf-8")
+    blog = (tmp_path / "blog/index.html").read_text(encoding="utf-8")
+
+    assert 'href="./blog/"' in benchmark
+    assert "Building GraphSentinel" in blog
+    assert "How TigerGraph is used" in blog
+    assert "Agentic capabilities" in blog
+    assert "What I learned" in blog
+    assert "What I would improve" in blog
+    assert "Draft technical blog" not in blog
+    assert (tmp_path / "static/blog.css").is_file()

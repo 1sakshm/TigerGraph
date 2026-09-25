@@ -6,6 +6,8 @@ An evidence-driven fraud investigation system for the Hacker House Goa 2026 Tige
 
 **Public benchmark preview:** [1sakshm.github.io/TigerGraph](https://1sakshm.github.io/TigerGraph/) displays the 20 committed investigations and traces on GitHub Pages. It is read-only; the interactive synthetic investigator runs in the Python service.
 
+**Technical blog:** [Building GraphSentinel](https://1sakshm.github.io/TigerGraph/blog/) explains the architecture, TigerGraph path, agentic capabilities, benchmark findings, lessons, and next improvements.
+
 **Host the interactive demo:** [Deploy to Render](https://render.com/deploy?repo=https://github.com/1sakshm/TigerGraph) uses the repository's `render.yaml` and Dockerfile. It runs only the labeled synthetic demo; the real 20-case benchmark remains available at the Pages link above.
 
 ![Dataset-backed benchmark view](screenshots/benchmark-hhg019.png)
@@ -108,6 +110,9 @@ The HHGOA action names and L1/L2 routes follow policy R1–R10 from the supplied
 | `tests/` | Contract, policy, graph payload, API, case progression, benchmark checks |
 | `docs/` | Design specification and implementation plan |
 
-The prepared [technical blog](BLOG.md) and [social post](SOCIAL_POST.md) are drafts. A recorded demo video and external publication remain separate submission steps.
+The [technical blog](https://1sakshm.github.io/TigerGraph/blog/) is published.
+The prepared [social post](SOCIAL_POST.md) still needs to be posted from the
+team member's social account. The recorded demo remains a separate submission
+artifact.
 
 See [DEPLOYMENT.md](DEPLOYMENT.md) for the read-only GitHub Pages preview and the containerized FastAPI deployment path.

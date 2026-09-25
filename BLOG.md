@@ -1,6 +1,9 @@
 # Building GraphSentinel: from a fraud alert to an investigation
 
-*Draft technical blog for the Hacker House Goa 2026 TigerGraph trial. Update the live graph results and links before publishing.*
+Published for the Hacker House Goa 2026 TigerGraph trial. Read the formatted
+version at <https://1sakshm.github.io/TigerGraph/blog/>, inspect the
+[20-case benchmark](https://1sakshm.github.io/TigerGraph/), or open the
+[interactive investigator](https://graphsentinel-hhgoa-demo.onrender.com/).
 
 A fraud model can say “look here.” It cannot tell an analyst whether a customer changed devices, several customers share an origin, a disputed charge resembles previous behavior, or a block would harm an innocent cardholder. GraphSentinel turns a trigger into a bounded investigation with evidence, uncertainty, and a policy-routed next action.
 

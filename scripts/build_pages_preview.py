@@ -26,6 +26,8 @@ def build(root: Path, output: Path) -> None:
     traces = data / "investigations"
     static.mkdir(exist_ok=True)
     traces.mkdir(parents=True, exist_ok=True)
+    blog = output / "blog"
+    blog.mkdir(exist_ok=True)
 
     page = (root / "frontend/benchmark.html").read_text(encoding="utf-8")
     page = page.replace('<html lang="en">', '<html lang="en" data-static-preview="true">')
@@ -33,11 +35,17 @@ def build(root: Path, output: Path) -> None:
     page = page.replace('src="/static/', 'src="./static/')
     page = page.replace(
         '<a class="header-link" href="/">Live investigator</a>',
+        '<a class="header-link" href="./blog/">Technical blog</a>'
+        '<a class="header-link" href="/">Live investigator</a>',
+    )
+    page = page.replace(
+        '<a class="header-link" href="/">Live investigator</a>',
         '<a class="header-link" href="https://github.com/1sakshm/TigerGraph">Read-only preview · source</a>',
     )
     (output / "index.html").write_text(page, encoding="utf-8")
+    shutil.copyfile(root / "frontend" / "blog.html", blog / "index.html")
     (output / ".nojekyll").write_text("", encoding="utf-8")
-    for name in ("style.css", "benchmark.css", "benchmark.js"):
+    for name in ("style.css", "benchmark.css", "benchmark.js", "blog.css"):
         shutil.copyfile(root / "frontend" / name, static / name)
 
     summaries = []
